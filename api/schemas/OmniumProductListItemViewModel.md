@@ -68,6 +68,8 @@ View model for product list item
 - `components`: List<[`OmniumProductComponent`](OmniumProductComponent.md)>, nullable, max length 250 — Components included in product - only relevant if products is package/bundle
 - `promotionIds`: List<string>, nullable, max length 250 — Promotions associated with the product
 - `isVirtual`: boolean, nullable — If true the product inventory status is ignored. Inventory for these products will not be taken into account nor affected by workflow or order management.
+- `isOpenPrice`: boolean, nullable — When true, the price is entered in the POS when the product is added to a cart. The price on the order line is locked, and the line is excluded from promotions.
+- `grossProfitPercent`: number (decimal), nullable — Gross profit in percent of the price excl. tax that the order line cost is calculated from. Set only when the product's CostCalculationMethod is GrossProfitPercent.
 - `storeIds`: List<string>, nullable, max length 1000 — List of available store IDs. If not set, the product will be available for all stores.
 - `assets`: List<[`OmniumAsset`](OmniumAsset.md)>, nullable, max length 250
 - `leadTime`: integer (int32), nullable — Lead time in days

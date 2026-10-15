@@ -99,6 +99,9 @@
 - `sortIndexBase`: integer (int32) — Calculated sort index base set by Omnium services
 - `isBackorder`: boolean — If true, the product have no reorder level, and will usually not be in stock
 - `isPriceLocked`: boolean — When true, the price on order lines created from this product will be locked and not recalculated.
+- `isOpenPrice`: boolean — When true, the price is entered in the POS when the product is added to a cart. Used for products sold without a fixed price. The price on the order line is locked and not recalculated, and the order line is excluded from promotions.
+- `costCalculationMethod`: [`OmniumCostCalculationMethod`](OmniumCostCalculationMethod.md)
+- `grossProfitPercent`: number (decimal), nullable — Gross profit in percent of the price excl. tax. Used to calculate the order line cost when CostCalculationMethod is GrossProfitPercent. Example: with a price of 100 excl. tax and 40, the cost is 60.
 - `isMainProductVariant`: boolean — If true, this variant should represent the product in flattened variant lists. This can also be used if you have a product catalog with multiple products with the same parent ID set, and you only wish to show one of the products in product searches. You could then set this to 'false' on the products you wish to exclude from searches, and filter on the value.
 - `isSerializableProduct`: boolean — If true, the product is serializable, and order line should contain serial number when completed
 - `isRental`: boolean — If true, the product is available for rental

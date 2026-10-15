@@ -334,7 +334,15 @@ Sample request for transactions within a date range:
        "page": 1
     }
 
-Sample response if the number of inventory transactions exceeds 2000 (totalHits).
+Sample request for all transactions within a date range. Page is left out, so the transactions are fetched by scrolling:
+
+    POST /api/inventory/searchtransactions
+    {
+       "from": "2024-01-01T00:00:00Z",
+       "to": "2024-01-31T23:59:59Z"
+    }
+
+Sample response to a request without page if the number of inventory transactions exceeds 2000 (totalHits).
 
 Notice that the 'scrollId' property has been populated as totalHits exceeds 2000, meaning that you should use the ScrollTransactions endpoint to fetch remaining inventory transactions
 
@@ -356,7 +364,7 @@ Notice that the 'scrollId' property has been populated as totalHits exceeds 2000
       "scrollId": "2f842421e06e4c60bb2c4f0d8b3ef60b"
     }
 
-Please note that if the total amount is larger than 2000, the response will contain a Scroll ID which can be used with the ScrollTransactions endpoint to fetch all remaining transactions.
+Please note that take and page return that page only, with at most 2000 transactions, and that page multiplied by take can be at most 20000. To fetch all transactions, leave out page: the response then contains the first 2000, and if the total amount is larger than 2000, a Scroll ID which can be used with the ScrollTransactions endpoint to fetch all remaining transactions.
 
 **Request body:** [`OmniumInventoryTransactionSearchRequest`](../../schemas/OmniumInventoryTransactionSearchRequest.md) — The search request contains properties for filtering inventory transactions
 

@@ -106,6 +106,8 @@ Order line
 - `internalWarehouseLocation`: string, nullable — Date of orderline delivery
 - `isExcludedFromPromotions`: boolean, nullable — If true promotion prices are not recalculated for this order line.
 - `isPriceLocked`: boolean, nullable — When true, the price is locked and will not be recalculated. Also sets IsExcludedFromPromotions to true.
+- `isOpenPrice`: boolean — When true, the product is sold without a fixed price, and the price is entered in the POS when the line is added. The line is then also price locked and excluded from promotions.
+- `grossProfitPercent`: number (decimal), nullable — When set, the cost is calculated from the price excl. tax before discount: cost = price × (1 − GrossProfitPercent / 100). Set from the product when its CostCalculationMethod is GrossProfitPercent.
 - `isDiscountBlocked`: boolean, nullable — Calculated - true when the product on this order line is blocked from having a manual discount applied.
 - `discountReasonCode`: string, nullable — Reason code for manual discount applied to this order line (audit trail). Kept in sync with DiscountReason.ReasonCode for legacy consumers.
 - `discountReason`: [`OmniumDiscountReason`](OmniumDiscountReason.md)

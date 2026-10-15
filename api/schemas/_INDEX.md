@@ -106,6 +106,7 @@ Every schema with its description. Search this file for a name or keyword, then 
 - [OmniumConsentType](OmniumConsentType.md) — Represents a consent type configuration for customer consent management
 - [OmniumContactPerson](OmniumContactPerson.md) — Person class. Used for contact persons in businesses.
 - [OmniumCoordinate](OmniumCoordinate.md)
+- [OmniumCostCalculationMethod](OmniumCostCalculationMethod.md) — How the cost of an order line for the product is found
 - [OmniumCostPrice](OmniumCostPrice.md) — Product cost price
 - [OmniumCostPriceDeleteRequest](OmniumCostPriceDeleteRequest.md)
 - [OmniumCostPriceOmniumResult](OmniumCostPriceOmniumResult.md) — Generic query result
@@ -348,6 +349,10 @@ Every schema with its description. Search this file for a name or keyword, then 
 - [OmniumProductCategoryUpdateResult](OmniumProductCategoryUpdateResult.md) — Result of a product category patch operation
 - [OmniumProductColli](OmniumProductColli.md) — Shipment colli
 - [OmniumProductComponent](OmniumProductComponent.md) — Product package component
+- [OmniumProductCondition](OmniumProductCondition.md) — One condition of a rule-based promotion: an attribute, an operator and the values it compares with.
+- [OmniumProductConditionGroup](OmniumProductConditionGroup.md) — An AND/OR group of product conditions in a rule-based promotion. Read a group as "all of these" (And), "any of these" (Or), "none of these" (Or with negate) or "not all of these" (And with negate).
+- [OmniumProductConditionLogicalOperator](OmniumProductConditionLogicalOperator.md) — How a condition group combines its parts.
+- [OmniumProductConditionOperator](OmniumProductConditionOperator.md) — How a product condition compares its attribute. The negative operators also hold for a product without the attribute.
 - [OmniumProductContentLanguage](OmniumProductContentLanguage.md)
 - [OmniumProductFacet](OmniumProductFacet.md)
 - [OmniumProductFieldSelection](OmniumProductFieldSelection.md) — Product-specific field selection with shorthand flags for common product field exclusions. Extends the generic OmniumFieldSelection with product-specific convenience flags.
@@ -578,6 +583,6 @@ Every schema with its description. Search this file for a name or keyword, then 
 - [OrderLineReplacementRequestModel](OrderLineReplacementRequestModel.md) — Orderline replacement request model
 - [PatchLineItemIdsDetails](PatchLineItemIdsDetails.md) — Details of line item ID updates by location
 - [ProblemDetails](ProblemDetails.md)
-- [PromotionType](PromotionType.md) — Defines the type of promotion [ShippingPromotion = 0, CategoryOrBrandPromotion = 1, MultiBuyPromotion = 2, OrderAmountPromotion = 3, KitPromotion = 4, ProductSearchPromotion = 5, PriceListPromotion = 6, CostPricePromotion = 7]
+- [PromotionType](PromotionType.md) — Defines the type of promotion [ShippingPromotion = 0, CategoryOrBrandPromotion = 1, MultiBuyPromotion = 2, OrderAmountPromotion = 3, KitPromotion = 4, ProductSearchPromotion = 5, PriceListPromotion = 6, CostPricePromotion = 7, RuleBasedPromotion = 8]
 - [ShipmentPackageLineItemReference](ShipmentPackageLineItemReference.md) — Used to add a link between packages and LineItems
 - [ValidationProblemDetails](ValidationProblemDetails.md)

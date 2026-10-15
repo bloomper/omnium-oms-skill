@@ -16,6 +16,7 @@ Business customer (Company)
 - `logo`: [`OmniumAsset`](OmniumAsset.md)
 - `assets`: List<[`OmniumAsset`](OmniumAsset.md)>, nullable, max length 250 — Omnium assets for business customer
 - `isAssortmentRestricted`: boolean, nullable — Set to 'true' if the business customer has a restricted assortment. This is controlled by prices. If the customer has a customer specific price for a product, the product is automatically included in the customer's assortment. If this is set to 'false', a non-customer specific price will be sufficient for the product to be part of the customer's assortment.
+- `isCustomerReferenceRequired`: boolean, nullable — Set to 'true' if orders for the business customer must have a customer reference (requisition number). The in-store app then requires the customer reference before checkout.
 - `punchOutUnitConversionList`: string, nullable — When using puch-out orders, unit conversion lists can be defined in settings. This reflects the corresponding Unit Conversion List for the customer.
 - `punchOutPropertyOverrides`: List<[`OmniumPropertyItem`](OmniumPropertyItem.md)>, nullable, max length 250 — When using puch-out orders, this list will provide information about property mapping
 - `punchOutDomain`: string, nullable — When using punch-out domain

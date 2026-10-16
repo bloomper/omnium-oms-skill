@@ -83,6 +83,9 @@ Product patch
 - `sortIndexBoost`: integer (int32), nullable — Sort index set by API / GUI
 - `isBackorder`: boolean, nullable — If true, the product have no reorder level, and will usually not be in stock
 - `isPriceLocked`: boolean, nullable — When true, the price on order lines created from this product will be locked and not recalculated.
+- `isOpenPrice`: boolean, nullable — When true, the price is entered in the POS when the product is added to a cart. The price on the order line is locked, and the line is excluded from promotions
+- `costCalculationMethod`: [`OmniumCostCalculationMethod`](OmniumCostCalculationMethod.md)
+- `grossProfitPercent`: number (decimal), nullable — Gross profit in percent of the price excl. tax, used when CostCalculationMethod is GrossProfitPercent
 - `isMainProductVariant`: boolean, nullable — If true, this variant should represent the product in flattened variant lists
 - `isSerializableProduct`: boolean, nullable — If true, the product is serializable, and order line should contain serial number when completed
 - `alternativeProductName`: string, nullable — Alternative product name

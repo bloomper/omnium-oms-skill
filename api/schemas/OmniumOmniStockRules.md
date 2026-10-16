@@ -11,6 +11,8 @@ A product is exposed only when it passes every rule that is set; rules that are 
 - `excludedSeasons`: List<string>, nullable, max length 250 — Products with any of these seasons are not exposed
 - `includedCategoryIds`: List<string>, nullable, max length 250 — When set, only products in at least one of these categories are exposed. This is the categoryId from OmniumProductCategory.
 - `excludedCategoryIds`: List<string>, nullable, max length 250 — Products in any of these categories are not exposed. Takes precedence over IncludedCategoryIds. This is the categoryId from OmniumProductCategory.
+- `includedAssortmentCodes`: List<string>, nullable, max length 250 — When set, only products with at least one of these assortment codes are exposed, so a product without assortment codes is not. A variant with assortment codes of its own is judged on those, other variants on the product's codes. Only the codes that are valid now count. This is the assortmentCodeId from OmniumAssortmentCode.
+- `excludedAssortmentCodes`: List<string>, nullable, max length 250 — Products with any of these assortment codes, valid now, are not exposed, judged the same way as IncludedAssortmentCodes. Takes precedence over IncludedAssortmentCodes. This is the assortmentCodeId from OmniumAssortmentCode.
 - `excludedProductIds`: List<string>, nullable, max length 5000 — Products with any of these product ids are not exposed
 - `profitabilityThreshold`: number (decimal), nullable — Minimum margin (unit price minus cost) a product must have to be exposed. Evaluated in CurrencyCode against the store's market with that currency; ignored when null or zero.
 - `currencyCode`: string, nullable — Currency ProfitabilityThreshold is expressed in. Required for the threshold to take effect.

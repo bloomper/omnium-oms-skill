@@ -20,3 +20,6 @@ Promotion type data
 - `priceListId`: string, nullable — The Id of the price list to use for this promotion (Applies to PriceListPromotion and CostPricePromotion). For CostPricePromotion, the price list provides cost prices used as the discount base.
 - `markupPercentage`: number (decimal), nullable — Percentage markup added to the cost price (Only applies if PromotionType is CostPricePromotion).
 - `useStoreCostPrice`: boolean, nullable — When true, uses the StoreCostPrice from the price list item instead of the supplier cost price (Only applies if PromotionType is CostPricePromotion).
+- `conditions`: [`OmniumProductConditionGroup`](OmniumProductConditionGroup.md)
+- `basePriceListIds`: List<string>, nullable, max length 50 — The price lists the discount is calculated from (Only applies if PromotionType is RuleBasedPromotion). They decide the price, never the products: a product without a valid price in any of them gets no discount. When two lists price the same customers, the lower price is used. An empty list uses the product's ordinary price; leave out to keep the current lists.
+- `onlyProductsAllowedOnPromotion`: boolean, nullable — Leaves out products that are blocked from discounts: marked as discount blocked, or with a fixed price period that has not ended (Only applies if PromotionType is RuleBasedPromotion). Leave out to keep the current value.

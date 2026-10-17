@@ -156,7 +156,7 @@ Return statuses define the workflow for return processing. Each status can trigg
 | DisplayName | string | Human-readable display name shown in the UI. |
 | TranslateKey | string | Translation key for multi-language support. |
 | IsDefaultStatus | bool | When `true`, new returns are automatically assigned this status. Only one status should have this set. |
-| IsReturnedStatus | bool | When `true`, marks the return as completed/returned. Used for reporting and filtering. |
+| IsReturnedStatus | bool | When `true`, marks the return as completed/returned. When project return sync is enabled (`IsProjectReturnSyncEnabled` in the project settings), product edits made in the Omnium UI to the return's project are rejected while the return is in this status, because the return can no longer be updated from the project. |
 | IsCancelledStatus | bool | When `true`, marks the return as cancelled. The return is considered void. |
 | WorkflowSteps | [List<WorkflowStep>](return-workflow-steps.md) | Workflow steps executed when the return enters this status. |
 | Properties | [List<PropertyItem>](https://docs.omnium.no/api/generic#properties) | Custom properties for this status. |

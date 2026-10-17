@@ -86,6 +86,7 @@ Every schema with its description. Search this file for a name or keyword, then 
 - [OmniumCashManagement](OmniumCashManagement.md) — Represents cash management details for a cash register, tracking expected vs. actual cash amounts.
 - [OmniumCategoryAndBrandFilter](OmniumCategoryAndBrandFilter.md)
 - [OmniumChangeCustomerId](OmniumChangeCustomerId.md)
+- [OmniumChangeProjectTypeRequest](OmniumChangeProjectTypeRequest.md) — Request for changing the project type of a project, or for refreshing a project from the project type it already has
 - [OmniumCharge](OmniumCharge.md) — Omnium order charge object
 - [OmniumChart](OmniumChart.md) — Class for displaying generic charts from Omnium
 - [OmniumChartData](OmniumChartData.md) — Class containing generic Omnium Charts with labels and data sets

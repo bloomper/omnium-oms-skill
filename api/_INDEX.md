@@ -305,7 +305,7 @@ Key schemas: [`OmniumProduct`](schemas/OmniumProduct.md), [`OmniumPriceList`](sc
 
 | File | Tag | Endpoints | Description |
 |------|-----|-----------|-------------|
-| [`endpoints/projects.md`](endpoints/projects.md) | Projects | 31 | Projects |
+| [`endpoints/projects.md`](endpoints/projects.md) | Projects | 32 | Projects |
 | [`endpoints/projects/assets.md`](endpoints/projects/assets.md) | Projects \| Assets | 6 | Project assets |
 | [`endpoints/projects/change-orders.md`](endpoints/projects/change-orders.md) | Projects \| Change orders | 6 | Project change orders |
 | [`endpoints/projects/logs.md`](endpoints/projects/logs.md) | Projects \| Logs | 4 | Project logs |

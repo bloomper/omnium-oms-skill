@@ -30,9 +30,9 @@ Set `RunAfterOrderIsSaved` to `true`. This step fetches orders directly from the
 1.  Checks if all order lines are virtual products (skips if so)
 2.  Collects SKU codes from all non-virtual product line items
 3.  Recalculates reserved inventory quantities for the SKU list by checking all open orders
-4.  The service recalculates reserved quantities by checking all orders in non-delivered, non-canceled statuses
+4.  The service recalculates reserved quantities by checking all orders in statuses that are not delivered, canceled, or excluded from reserved inventory
 
-**Order type config required:** Recalculation determines which orders to skip by reading the order type config. Only orders in statuses marked with `IsDeliveredStatus: true` or `IsCanceledStatus: true` are excluded. If an order has a status that does not appear in its order type config at all, it will be counted as having reserved inventory — even if the status name semantically implies completion.
+**Order type config required:** Recalculation determines which orders to skip by reading the order type config. Only orders in statuses marked with `IsDeliveredStatus: true`, `IsCanceledStatus: true`, or `IsExcludedFromReservedInventory: true` are excluded. If an order has a status that does not appear in its order type config at all, it will be counted as having reserved inventory — even if the status name semantically implies completion. See the [order status model](../../order-config.md#order-status-model).
 
 ### Prerequisites
 
@@ -63,6 +63,8 @@ Set `RunAfterOrderIsSaved` to `true`. This step fetches orders directly from the
 **Scenario 3: Order Completion** Order marked complete. Step recalculates to ensure reserved counts exclude this now-completed order.
 
 **Scenario 4: All Virtual Products** Order contains only digital/virtual products. Step returns success immediately without processing.
+
+**Scenario 5: Order Handed Over to the ERP** The ERP reserves the items itself and sends inventory with that reservation already deducted. The order moves to a status with `IsExcludedFromReservedInventory: true`. Running this step on that status releases the order's reservation in Omnium, so the items are not reserved twice. Run it also on the statuses the order can move to from there, so the reservation is restored if the order returns to a status that reserves inventory.
 
 ## Error Handling
 

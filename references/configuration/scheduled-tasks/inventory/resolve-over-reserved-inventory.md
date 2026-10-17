@@ -42,10 +42,10 @@ Enable this task when you:
 
 ### What It Does
 
-1.  Recalculates actual reserved quantities by summing `ReservedInventoryQuantity` from non-delivered, non-cancelled order lines — this avoids acting on stale data
+1.  Recalculates actual reserved quantities by summing `ReservedInventoryQuantity` from order lines on orders that are not delivered, cancelled, or in a status excluded from reserved inventory — this avoids acting on stale data
 2.  Identifies inventory items where actual reserved quantity exceeds available stock (i.e. `reservedQuantity > inventory`)
 3.  Builds a deficit map: how many units need to be freed per SKU and warehouse
-4.  Scans all non-delivered, non-cancelled orders with reserved inventory, sorted newest first
+4.  Scans all non-delivered, non-cancelled orders with reserved inventory, sorted newest first. Orders in a status with `IsExcludedFromReservedInventory: true` in the order type config are skipped, because they are not counted in reserved inventory
 5.  For each order line contributing to an over-reservation, reduces `ReservedInventoryQuantity` by the deficit amount and sets `ReservedInventory = false`
 6.  Stops removing reservations for a SKU once the deficit is covered
 7.  Saves updated orders in batches and reduces the inventory reservation counters accordingly
@@ -72,7 +72,7 @@ When a shipment uses a Virtual Stock Location (VSL), deficits on the VSL and the
 
 ### Prerequisites
 
-*   Inventory management must be enabled (`InventoryManagement.IsEnabled = true`)
+*   Inventory management must be enabled with write access (`InventoryManagement.IsEnabled = true` and `InventoryManagement.IsWriteEnabled = true`). Without write access, the task finds no over-reserved inventory
 *   Orders must use warehouse-based inventory reservations
 
 ### Side Effects

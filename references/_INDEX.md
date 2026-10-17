@@ -7,7 +7,7 @@ Search this file for a keyword or jump to a topic, then read only the pages you 
 ## Topics
 
 - [Carts](#carts) (21 pages)
-- [Configuration](#configuration) (89 pages)
+- [Configuration](#configuration) (90 pages)
 - [Connectors & Plugins](#connectors--plugins) (76 pages)
 - [Customers](#customers) (14 pages)
 - [Getting Started, API Conventions & Security](#getting-started-api-conventions--security) (21 pages)
@@ -73,6 +73,7 @@ Platform settings, scheduled tasks, GUI extensions, reports, and other configura
 - [Property Options](configuration/property-options.md) — Centrally managed dropdown value lists that can be reused across custom property dropdowns on products, projects, customers, stores, orders, and carts.
 - [Rounding Settings](configuration/rounding-settings.md) — Configure price rounding policies with range-based rules and multiple rounding methods.
 - [Scheduled Tasks](configuration/scheduled-tasks.md) — Configure and manage background jobs in Omnium
+- [Settings API](configuration/settings-api.md) — Read your tenant's order types, order statuses, workflow steps, order settings and customer settings through the read-only Omnium Settings API.
 - [SMS Client Settings](configuration/sms-client-settings.md) — Guide for configuring SMS providers in Omnium with per-market, market group, and store resolution.
 
 ### configuration/scheduled-tasks

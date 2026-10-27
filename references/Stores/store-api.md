@@ -139,7 +139,7 @@ You can also edit store information in the GUI.
 
 ### Create Store
 
-Add a new store to Omnium by submitting a store object to the stores endpoint. If the store exists, it will be overridden by the object.
+Add a new store to Omnium by submitting a store object to the stores endpoint. If the store exists, it will be overridden by the object. The store's `chartOfAccounts` and `taxGroups` are kept when you leave them out — see [Store accounts and VAT rates](store-api.md#store-accounts-and-vat-rates).
 
 [Create store documentation](https://api.omnium.no/documentation/index.html#/Stores/put_api_Stores).
 
@@ -167,6 +167,62 @@ Important
 The store will be permanently deleted and cannot be recovered.
 
 [Delete store documentation](https://api.omnium.no/documentation/index.html#/Stores/StoresDelete).
+
+### Get the VAT rates a store sells under
+
+```
+GET /api/Stores/{storeId}/TaxGroups?validOn=2026-11-01
+```
+
+Returns the VAT rates (tax groups) the store sells under: the store's own VAT rates merged over the tenant VAT rates by code. Use it, for example, in a webshop that shows prices excluding VAT for a store with its own [VAT rates](../Order/Ledger/ledger-tax-groups.md#store-vat-rates).
+
+*   Only active rows are returned.
+*   Without `validOn`, every validity window of a code is returned. With `validOn`, only the rows valid on that day are returned.
+*   The list is empty when the tenant does not use tax groups.
+*   The account overrides of the rows are not returned.
+*   An unknown store returns `404`.
+
+A shortened response for a store that replaces the `FOOD` code — the response also contains every tenant code the store does not replace:
+
+```json
+[
+  {
+    "code": "FOOD",
+    "name": "Livsmedel 12%",
+    "rate": 12,
+    "externalCode": "MP2",
+    "isOutsideVatScope": false,
+    "isActive": true
+  },
+  {
+    "code": "HIGH",
+    "name": "Standard 25%",
+    "rate": 25,
+    "externalCode": "3",
+    "isOutsideVatScope": false,
+    "isActive": true
+  }
+]
+```
+
+* * *
+
+## Store accounts and VAT rates
+
+A store can have its own accounting accounts and its own VAT rates, which replace individual tenant entries. Both are lists on the store model:
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `chartOfAccounts` | array | The store's own accounts. Each one replaces the tenant account it matches on category, discriminator, currency, and tax group. The fields are described in [Chart of Accounts](../Order/Ledger/ledger-chart-of-accounts.md); `category` is sent as the category name, for example `"Sales"`. See [Store Accounts](../Order/Ledger/ledger-store-accounts.md). |
+| `taxGroups` | array | The store's own VAT rates. A row replaces every tenant row with the same code, and the code must exist in the tenant VAT rates. The fields are described in [Tax Groups](../Order/Ledger/ledger-tax-groups.md#tax-group-fields). See [Store VAT rates](../Order/Ledger/ledger-tax-groups.md#store-vat-rates). |
+
+Besides the fields described on those pages, a VAT rate row has `overrideSalesAccountNumber` and `overrideOutputVatAccountNumber`, which are stored with the row but not used by postings — postings take their accounts from the chart of accounts — and an account entry has `properties`, its custom properties.
+
+How the two lists behave in the API:
+
+*   **Reading** — they are returned when you get a single store and in the responses of `PUT /api/Stores` and `POST /api/Stores/Update`. Store lists and searches leave them out.
+*   **Writing** — on `POST /api/Stores`, `PUT /api/Stores`, `POST /api/Stores/Update`, and `POST /api/Stores/AddMany`, a list you leave out keeps the store's current list, and an empty list removes it. On `PATCH /api/Stores/PatchStore`, a list you send replaces the whole list. `POST /api/Stores/Enrich` fills a list only when the store has none.
+*   **Validation** — VAT rates you change that break a rule (for example a code the tenant does not have) return `400` with the reason. A list sent back unchanged is accepted. `POST /api/Stores/AddMany` checks every store before it saves any of them.
 
 * * *
 

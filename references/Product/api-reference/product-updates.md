@@ -45,3 +45,28 @@ When performing full product syncs (e.g., nightly/weekly), it's important to con
 *   Only change the `ExternalUrl` of an asset when the underlying image has actually changed.
 
 * * *
+
+### Product group
+
+`productGroup` places a product or a variant in a product group, with the group's `id` and `name`. Price list items keep the product group of their product when the price list is calculated, so the campaign planning can [break down and filter planned items by product group](../../Prices/Campaigns/campaign-settings.md#group-planned-items-with-planning-dimensions). A variant without a product group uses the product's.
+
+```json
+{
+  "id": "1001_no",
+  "name": "Trail running shoe",
+  "productGroup": { "id": "310", "name": "Running shoes" },
+  "variants": [
+    { "id": "1001-42_no", "skuId": "1001-42", "productGroup": { "id": "311", "name": "Trail running shoes" } }
+  ]
+}
+```
+
+| Endpoint | When `productGroup` is left out | To remove the product group |
+| --- | --- | --- |
+| `POST /api/Products` and `UpdateMany`, for an existing product | The stored product group is kept, so a sync that does not send it does not clear a group set by another integration | Use a patch |
+| `PUT /api/Products` and `AddMany` | The product has no product group (the product is replaced) | Leave it out |
+| `PATCH /api/Products/{productId}` and `PatchMany` | The stored product group is kept | Add `"ProductGroup"` to `fieldsToForceNull` |
+
+`GET` responses return the product group of the product and of each variant. Product groups are not a list you maintain in Omnium: the id and name you send are stored on the product as they are. A change of product group reaches the price list items, and with them the campaign planning, the next time their price list is calculated.
+
+* * *

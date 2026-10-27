@@ -73,6 +73,36 @@ A pick list can be handed over to a different warehouse instead of being picked 
 
 * * *
 
+## Cannot pick
+
+When a store cannot find an item that Omnium shows as in stock, the picker registers **Cannot pick** on the order line in the orders-to-pick view. The dialog shows the store's in-stock, reserved, and available quantity for the product, and lets the picker enter the **Actual quantity in stock**. The picker then decides what happens to the order line:
+
+| Action | Effect |
+| --- | --- |
+| **Cancel order line** | Cancels the order line. The tenant's cancellation reasons are offered when they are configured. |
+| **Reallocate** | Moves the order line to a new shipment so it can be fulfilled from another warehouse. Shown only when [reallocation from Cannot pick](order-pick-lists.md#reallocate-from-cannot-pick) is set up. |
+| **Update inventory** | Sets the store's inventory to the entered quantity and logs the reason for the change. The order line is not changed. |
+
+When the picker changes the quantity, the line actions become **Update & cancel line** and **Update & reallocate line**, which correct the inventory first and then act on the order line.
+
+**Cannot pick** is available when the user has update access to product inventory and inventory writing is enabled (`IsWriteEnabled` in [Inventory configuration](../Inventory/inventory-config.md)). It is not shown on package lines.
+
+Cannot pick on an item in an existing pick list only corrects the store's inventory. To cancel or reallocate the missing quantity there, set the item's [deviation handling](order-pick-lists.md#deviation-handling).
+
+### Reallocate from Cannot pick
+
+Reallocation from **Cannot pick** needs three things:
+
+1.  **Reallocate from Cannot pick** (`ReallocateOnCannotPick`) is turned on in the [pick list configuration](order-pick-lists.md#configuration).
+2.  The order's order type has **Split cancelled order lines to status** (`SplitCancelledOrderlinesToStatus`) set. See the order type model in [Order configuration](order-config.md).
+3.  That status is one of the order type's own statuses, and it runs [reallocation workflow steps](workflow-steps/allocation.md#reallocation).
+
+When the picker reallocates, the order line is removed from the store's shipment and split into a new shipment with the status from `SplitCancelledOrderlinesToStatus`. The workflow steps on that status decide which warehouse gets the line, and the warehouse that could not pick it is excluded — see [Reallocate on cancel](workflow-steps/allocation.md#example-reallocate-on-cancel). No cancellation reason is asked for, because the line is not canceled.
+
+If `SplitCancelledOrderlinesToStatus` is empty, or names a status that does not exist on the order's order type, the **Reallocate** button is not shown and the picker can only cancel the order line.
+
+* * *
+
 ## Pick List API
 
 ### Base URL
@@ -253,6 +283,7 @@ Pick list behavior is configured per tenant under `PickListSettings`.
 | AllowedOrderStatuses | array | — | Order statuses a pick list is allowed to move orders to. Shown as **Allowed order statuses for update**. |
 | ShowInStockItemsOnPickList | bool | false | Print the in-stock quantity for each item on the pick list. Shown as **Display the quantity of items in stock when printing picklists**. |
 | HideCommentsOnPickListOrders | bool | false | Hide order comments in the pick list orders view. Shown as **Hide comments on pick list orders view**. |
+| ReallocateOnCannotPick | bool | false | Offer to reallocate the order line instead of canceling it when **Cannot pick** is used on an order in the orders-to-pick view. Requires `SplitCancelledOrderlinesToStatus` on the order type — see [Reallocate from Cannot pick](order-pick-lists.md#reallocate-from-cannot-pick). Shown as **Reallocate from Cannot pick**. |
 
 Pick list IDs come from the `PickListNumberOptions` number sequence — see [Number options](../configuration/numberoptions.md) for how to configure the format and starting number.
 

@@ -11,6 +11,7 @@ Model for increasing reserved inventory on an inventory item. Only the reserved 
 - `orderId`: string, nullable — [Optional] The order Id related to the reservation.
 - `purchaseOrderId`: string, nullable — [Optional] The purchase order Id related to the reservation.
 - `transactionReference`: string, required — Idempotency key for this reservation. If a transaction with this reference already exists, the request is skipped instead of being applied again.
+- `reason`: string, nullable — [Optional] Reason for the reservation, stored on the inventory transaction.
 
 **Used directly by endpoints in:**
 

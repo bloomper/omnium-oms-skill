@@ -44,6 +44,13 @@ Number types are used to distinguish between different entity types. Below are t
 *   `RmaNumberOptions`
 *   `ProjectNumberOptions`
 *   `PickListNumberOptions`
+*   `ReceiptNumberOptions`
+
+* * *
+
+### Receipt number series
+
+The [Create Receipts](../Order/workflow-steps/payment/create-receipts.md) workflow step numbers receipts from the `ReceiptNumberOptions` number type. When no `ReceiptNumberOptions` is configured for the market or tenant, receipts take their numbers from `InvoiceNumberOptions`. A receipt is a sales document and must have a number from a series, so it never falls back to `GuidNumberService`: when neither number type is configured with another service, the step issues no receipt.
 
 * * *
 

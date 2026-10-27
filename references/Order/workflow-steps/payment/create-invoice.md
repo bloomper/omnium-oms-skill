@@ -38,6 +38,7 @@ This step has no configurable properties.
 
 *   Creates invoice document
 *   Invoice number is generated and stored
+*   At shipment level, the invoice records the shipment in `shipmentId`, and the [Create Receipts](create-receipts.md) step issues no receipt for that shipment
 *   Invoice may be sent to external systems (ERP, accounting)
 
 ## Business Cases
@@ -67,3 +68,4 @@ This step has no configurable properties.
 
 *   [Capture Payments](capture-payments.md) - Often run together with invoicing
 *   [Export Invoices](../export/export-invoices.md) - Exports created invoices to external systems
+*   [Create Receipts](create-receipts.md) - Issues a paid receipt for a delivered shipment instead of an invoice to pay

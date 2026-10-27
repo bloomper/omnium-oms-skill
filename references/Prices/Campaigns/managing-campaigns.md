@@ -33,7 +33,7 @@ While a campaign is in the **Planning** status, all fields can be edited:
 *   Markets and stores
 *   Tags
 
-Once a campaign moves to **Active**, planning inputs are locked. If corrections are needed, the campaign can be rolled back to Planning status (see [Status Management](managing-campaigns.md#status-management) below).
+Moving a campaign to **Active** does not lock it. When the tenant has a [locked status](campaign-settings.md#lock-the-plan-with-a-locked-campaign-status), the plan freezes while the campaign is in that status: an edit of an item on the campaign's price lists that changes its planned volume, price or costs is refused unless you are an administrator (Omnium staff or a user with the tenant's **Administrators** role). The lock covers those price list items, not the campaign fields listed above.
 
 * * *
 
@@ -99,9 +99,14 @@ To reuse a campaign's structure as a starting point for a new one:
 2.  Click the context menu on the campaign you want to copy
 3.  Select **Copy**
 4.  Enter a name for the new campaign
-5.  Confirm
+5.  Optionally pick a **Start Date** for the copy
+6.  Click **Create**
 
-The copy creates a new campaign in **Planning** status with the same settings as the original. Promotion links are not copied — you will need to link promotions to the new campaign separately.
+The copy creates a new campaign in the first campaign status (**Planning** unless the tenant has configured its own statuses) with the same settings as the original: description, tags, markets, stores, planning notes, properties and campaign code. Promotion links are not copied — you will need to link promotions to the new campaign separately.
+
+Without a start date, the copy keeps the original's start and end dates. With one, it starts on that date and keeps the original's length. Like any new campaign, the copy gets its own status dates and [milestones](campaign-settings.md#give-every-campaign-milestones-and-deadlines) from its start date.
+
+A copy that starts more than 300 days after the original is taken as the same campaign a year later: it gets the original as its [previous campaign](overview.md#campaign-properties), whose figures serve as last year's on the **Follow-up** tab. A copy that starts sooner, or keeps the original's dates, gets no previous campaign.
 
 * * *
 

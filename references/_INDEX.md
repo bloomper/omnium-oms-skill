@@ -7,14 +7,14 @@ Search this file for a keyword or jump to a topic, then read only the pages you 
 ## Topics
 
 - [Carts](#carts) (21 pages)
-- [Configuration](#configuration) (89 pages)
+- [Configuration](#configuration) (90 pages)
 - [Connectors & Plugins](#connectors--plugins) (76 pages)
 - [Customers](#customers) (14 pages)
 - [Getting Started, API Conventions & Security](#getting-started-api-conventions--security) (21 pages)
 - [Integrations](#integrations) (12 pages)
 - [Inventory](#inventory) (13 pages)
-- [Orders](#orders) (214 pages)
-- [Prices](#prices) (24 pages)
+- [Orders](#orders) (222 pages)
+- [Prices](#prices) (25 pages)
 - [Products](#products) (57 pages)
 - [Projects](#projects) (13 pages)
 - [Purchase Orders](#purchase-orders) (22 pages)
@@ -73,6 +73,7 @@ Platform settings, scheduled tasks, GUI extensions, reports, and other configura
 - [Property Options](configuration/property-options.md) — Centrally managed dropdown value lists that can be reused across custom property dropdowns on products, projects, customers, stores, orders, and carts.
 - [Rounding Settings](configuration/rounding-settings.md) — Configure price rounding policies with range-based rules and multiple rounding methods.
 - [Scheduled Tasks](configuration/scheduled-tasks.md) — Configure and manage background jobs in Omnium
+- [Settings API](configuration/settings-api.md) — Read your tenant's order types, order statuses, workflow steps, order settings and customer settings through the read-only Omnium Settings API.
 - [SMS Client Settings](configuration/sms-client-settings.md) — Guide for configuring SMS providers in Omnium with per-market, market group, and store resolution.
 
 ### configuration/scheduled-tasks
@@ -236,7 +237,7 @@ Pre-built integrations maintained by the Omnium team — payment providers, ship
 
 - [Google Feeds Integration](plugins/Other/GoogleFeeds.md) — Guide for setting up Google product feeds integration.
 - [InRetrn](plugins/Other/InRetrn.md) — Guide for setting up the InRetrn returns integration in Omnium.
-- [Link Mobility](plugins/Other/LinkMobility.md) — Guide for setting up Link Mobility in Omnium.
+- [LINK Mobility](plugins/Other/LinkMobility.md) — Send SMS through LINK Mobility and let customers reply by SMS, with each order, return or case conversation on its own number from a subnumber range.
 - [PinMeTo](plugins/Other/PinMeTo.md) — Guide for setting up PinMeTo integration in Omnium.
 - [Sendgrid](plugins/Other/Sendgrid.md) — Guide for setting up the Omnium Sendgrid plugin.
 
@@ -443,6 +444,7 @@ Order management in Omnium — lifecycle, workflows, returns, click & collect, a
 
 - [Orders](Order.md) — Order management in Omnium — lifecycle, workflows, returns, click & collect, and API reference.
 - [Order API Reference](Order/api-reference.md) — Complete endpoint reference for the Omnium Order API. Covers creating, retrieving, updating, searching, and deleting orders, as well as managing order lines, payments, and documents.
+- [Invoices API](Order/invoices-api.md) — Read the invoices, receipts and credit notes of an order, search them, and download them as PDF with the Omnium Invoices API.
 - [Ledger](Order/Ledger.md) — Accounting postings in Omnium — how sales, VAT, tender, and gift cards are turned into balanced double-entry vouchers for export to your ERP or accounting system.
 - [Order Guide](Order/order-api.md) — Conceptual guide to working with orders in Omnium. Covers the order model, payments, discounts, pricing, order types, and common integration patterns.
 - [Click and Collect](Order/order-click-and-collect.md) — Working with click and collect orders in Omnium.
@@ -454,6 +456,14 @@ Order management in Omnium — lifecycle, workflows, returns, click & collect, a
 - [Pick Lists](Order/order-pick-lists.md) — How pick lists group order shipments for warehouse and in-store picking in Omnium, including statuses, deviation handling, and the Pick List API.
 - [Workflow Steps](Order/workflow-steps.md) — Complete reference for all workflow steps (OrderActions) in Omnium OMS - the building blocks of order processing workflows.
 
+### Order/Allocation
+
+- [About Allocation Engine (BETA)](Order/Allocation/about-allocation-engine.md) — What the Omnium allocation engine is, how it decides which stores and warehouses an order ships from, and how to start using it.
+- [Allocation API (BETA)](Order/Allocation/allocation-api.md) — Ask the allocation engine which warehouses an order or basket would ship from, without changing the order, the cart, or inventory.
+- [Allocation Rules (BETA)](Order/Allocation/allocation-rules.md) — Create an allocation rule that steers which stores and warehouses the allocation engine ships an order from, with a worked example.
+- [Allocation Settings (BETA)](Order/Allocation/allocation-settings.md) — Configure how the allocation engine behaves - splitting, distance, profiles, and what each store and shipping option can do - globally and per market.
+- [Allocation Simulator (BETA)](Order/Allocation/allocation-simulator.md) — Run an order or cart through the allocation engine to see which warehouses it would ship from, and why, without changing anything.
+
 ### Order/api-reference
 
 - [Workflow Endpoints](Order/api-reference/workflow.md) — API reference for order workflow endpoints. Update order and shipment statuses, handle partial deliveries, split shipments, and trigger workflow steps like payment capture, notifications, and inventory updates.
@@ -461,6 +471,7 @@ Order management in Omnium — lifecycle, workflows, returns, click & collect, a
 ### Order/Ledger
 
 - [API Reference](Order/Ledger/api-reference.md) — Public Accounting API reference — read accounting postings and ledger lines produced by Omnium, with endpoints, search requests, response models, and enums.
+- [Export to an Accounting System](Order/Ledger/ledger-accounting-export.md) — How POS Z-report postings and web-fulfillment postings fit together, and how to turn postings and ledger lines from the Accounting API into vouchers in your accounting system or ERP.
 - [Chart of Accounts](Order/Ledger/ledger-chart-of-accounts.md) — Map Omnium events to general-ledger account numbers — account categories, discriminators, currency and tax-group keys, country presets, and the rules Omnium uses to resolve which account a ledger line books to.
 - [Configuration](Order/Ledger/ledger-config.md) — Configure Omnium accounting — enable postings, set currency and time zone, tune auto-balancing, schedule the daily web-fulfillment posting job, and validate the setup.
 - [Posting Exclusions](Order/Ledger/ledger-posting-exclusions.md) — Keep selected orders out of web-fulfillment accounting postings with exclusion rules that filter by market, store, order type, order status, payment method, and sales or return side.
@@ -468,7 +479,7 @@ Order management in Omnium — lifecycle, workflows, returns, click & collect, a
 - [Posting Preview (dry run)](Order/Ledger/ledger-preview.md) — Preview the accounting postings an order or a store/date range would generate, without committing them — useful for validating the chart of accounts and tax groups before going live.
 - [Postings in the UI](Order/Ledger/ledger-reports.md) — Browse accounting postings under Reports — the list and detail views, ledger-line inspection, CSV export, the Accounting Ledger custom report, and the per-Z-report VAT settlement export.
 - [Store Accounts](Order/Ledger/ledger-store-accounts.md) — Give a store its own accounting accounts that replace individual tenant chart-of-accounts entries, and set the store's accounting company code and accounting dimension code.
-- [Tax Groups (VAT codes)](Order/Ledger/ledger-tax-groups.md) — Tenant-managed VAT codes in Omnium — a rate, an ERP/SAF-T external code (MVA-kode), validity windows for rate changes, and how tax groups tag products, prices, and ledger lines.
+- [Tax Groups (VAT codes)](Order/Ledger/ledger-tax-groups.md) — Tenant-managed VAT codes in Omnium — a rate, an ERP/SAF-T external code (MVA-kode), validity windows for rate changes, per-store VAT rates, and how tax groups tag products, prices, and ledger lines.
 
 ### Order/order-logging
 
@@ -679,6 +690,7 @@ Order management in Omnium — lifecycle, workflows, returns, click & collect, a
 - [Create and Send Gift Cards](Order/workflow-steps/payment/create-and-send-gift-cards.md) — Create purchased gift cards and send them to recipients.
 - [Create Invoice](Order/workflow-steps/payment/create-invoice.md) — Generate an invoice for the order or specific shipment.
 - [Create Payment Remaining](Order/workflow-steps/payment/create-payment-remaining.md) — Create an additional payment for any remaining unpaid amount on the order.
+- [Create Receipts](Order/workflow-steps/payment/create-receipts.md) — Issue the paid receipts for an order, with the delivered lines and the payments that paid for them, for the customer to see in the webshop.
 - [Credit Cancelled Order Lines](Order/workflow-steps/payment/credit-cancelled-order-lines.md) — Refund captured payment amounts for cancelled order lines.
 - [Remove Authorization Expires](Order/workflow-steps/payment/remove-authorization-expires.md) — Clear payment authorization expiration dates after capture.
 - [Reserve Gift Cards](Order/workflow-steps/payment/reserve-gift-cards.md) — Reserve gift card balances used as payment on the order.
@@ -768,6 +780,7 @@ How prices work in Omnium — price levels, promotions, price lists, prioritizat
 - [Campaign Performance](Prices/Campaigns/campaign-performance.md) — How to track campaign revenue, sales volume, and variance against targets using the real-time performance dashboard and analytics charts.
 - [Campaign Planning](Prices/Campaigns/campaign-planning.md) — How to set revenue targets and sales volume forecasts at the campaign, promotion, and SKU level for accurate campaign planning.
 - [Campaign Promotions](Prices/Campaigns/campaign-promotions.md) — How to link and unlink promotions to campaigns, and how the relationship between campaigns and promotions works in practice.
+- [Campaign Settings](Prices/Campaigns/campaign-settings.md) — How to configure campaign statuses with a locked status, campaign milestones and deadlines, planning dimensions, sales channels and the thresholds of the campaign overview.
 - [Managing Campaigns](Prices/Campaigns/managing-campaigns.md) — How to create, edit, copy, and delete campaigns in the Omnium UI — including search, filtering, and status management.
 - [Campaign Overview](Prices/Campaigns/overview.md) — Core concepts behind campaigns in Omnium — lifecycle statuses, the relationship between campaigns, promotions, and price lists, and how data is structured.
 
@@ -1022,7 +1035,7 @@ Email, SMS, notification templates
 
 ### plugins/Other
 
-- [Link Mobility](plugins/Other/LinkMobility.md) — Guide for setting up Link Mobility in Omnium.
+- [LINK Mobility](plugins/Other/LinkMobility.md) — Send SMS through LINK Mobility and let customers reply by SMS, with each order, return or case conversation on its own number from a subnumber range.
 - [Sendgrid](plugins/Other/Sendgrid.md) — Guide for setting up the Omnium Sendgrid plugin.
 
 ### Projects/project-actions

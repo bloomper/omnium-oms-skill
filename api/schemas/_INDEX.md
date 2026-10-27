@@ -86,10 +86,12 @@ Every schema with its description. Search this file for a name or keyword, then 
 - [OmniumCashManagement](OmniumCashManagement.md) — Represents cash management details for a cash register, tracking expected vs. actual cash amounts.
 - [OmniumCategoryAndBrandFilter](OmniumCategoryAndBrandFilter.md)
 - [OmniumChangeCustomerId](OmniumChangeCustomerId.md)
+- [OmniumChangeProjectTypeRequest](OmniumChangeProjectTypeRequest.md) — Request for changing the project type of a project, or for refreshing a project from the project type it already has
 - [OmniumCharge](OmniumCharge.md) — Omnium order charge object
 - [OmniumChart](OmniumChart.md) — Class for displaying generic charts from Omnium
 - [OmniumChartData](OmniumChartData.md) — Class containing generic Omnium Charts with labels and data sets
 - [OmniumChartDataset](OmniumChartDataset.md) — Chart data set
+- [OmniumChartOfAccountEntry](OmniumChartOfAccountEntry.md) — An account in a chart of accounts: the account that postings of one category book to.
 - [OmniumClaim](OmniumClaim.md) — Class containing connection between a claim project and a return
 - [OmniumComment](OmniumComment.md) — Object used for adding and getting comments on all models
 - [OmniumCommentMention](OmniumCommentMention.md) — An Omnium user tagged with @ in a comment
@@ -151,6 +153,8 @@ Every schema with its description. Search this file for a name or keyword, then 
 - [OmniumDeliverySearchRequest](OmniumDeliverySearchRequest.md) — Search model for deliveries
 - [OmniumDiscount](OmniumDiscount.md) — Represents a discount that can be applied to an order, line items, or shipping. Add discounts to orderForm.discounts for order-level or line-item discounts, or to shipment.discounts for shipping discounts.
 - [OmniumDiscountCoupon](OmniumDiscountCoupon.md) — Discount Coupon
+- [OmniumDiscountKitComponentGroup](OmniumDiscountKitComponentGroup.md) — A component group of a kit discount: the products that can fill one part of the kit.
+- [OmniumDiscountKitReward](OmniumDiscountKitReward.md) — Configuration for kit promotions on a discount (e.g., "Buy tights and a half zip together for 599"). Used when the discount's RewardType is "Kit". The kit is priced when every required component group is present on the order lines in SkuIds. Example "tights + half zip for 599 SEK": RewardType="FixedPrice", PromotionAmounts=[{ amount: 599, currency: "SEK" }], and one required component group per product.
 - [OmniumDiscountReason](OmniumDiscountReason.md) — Audit information for a manually applied discount: which configured reason code was chosen, an optional free-text comment, and who applied it. Applies to order line, mass order line, and order-level manual discounts.
 - [OmniumDiscountRefund](OmniumDiscountRefund.md) — Represents a discount applied to return/refund transactions.
 - [OmniumDiscountSale](OmniumDiscountSale.md) — Represents a discount applied to sales transactions.
@@ -228,6 +232,7 @@ Every schema with its description. Search this file for a name or keyword, then 
 - [OmniumInventoryTransactionOmniumResult](OmniumInventoryTransactionOmniumResult.md) — Generic query result
 - [OmniumInventoryTransactionSearchRequest](OmniumInventoryTransactionSearchRequest.md) — Contains all parameters for doing an inventory transaction search
 - [OmniumInventoryUpdate](OmniumInventoryUpdate.md) — Model for modifying an inventory item in Omnium
+- [OmniumInventoryUpdateManyRequest](OmniumInventoryUpdateManyRequest.md) — Request model for updating a range of inventory items with an optional reason and reason code
 - [OmniumInvoice](OmniumInvoice.md) — Invoices
 - [OmniumInvoiceOmniumInvoiceTotalsOmniumSearchResultWithTotals](OmniumInvoiceOmniumInvoiceTotalsOmniumSearchResultWithTotals.md) — Generic class for receiving search results with facets and totals
 - [OmniumInvoiceOmniumSearchResult](OmniumInvoiceOmniumSearchResult.md) — Generic class for receiving search results with facets
@@ -247,6 +252,7 @@ Every schema with its description. Search this file for a name or keyword, then 
 - [OmniumOmniStockRules](OmniumOmniStockRules.md) — Rules that decide which of a store's products are exposed as OmniStock (stock made available to online channels), and what the store may be used for when stock is sourced from it. A product is exposed only when it passes every rule that is set; rules that are null or empty are ignored.
 - [OmniumOpeninghour](OmniumOpeninghour.md)
 - [OmniumOpeningHours](OmniumOpeningHours.md) — Class for storing store opening hours
+- [OmniumOpeningHoursInterval](OmniumOpeningHoursInterval.md) — A period the store is open, e.g. 13:00-17:00
 - [OmniumOpeningHoursPatch](OmniumOpeningHoursPatch.md) — Class for storing store opening hours
 - [OmniumOrder](OmniumOrder.md) — Omnium order object
 - [OmniumOrderActionExecutionResult](OmniumOrderActionExecutionResult.md) — Result from single workflow action
@@ -539,8 +545,11 @@ Every schema with its description. Search this file for a name or keyword, then 
 - [OmniumSubscriptionSearchRequest](OmniumSubscriptionSearchRequest.md) — Subscription search request
 - [OmniumSupplier](OmniumSupplier.md) — Company that delivers purchase orders
 - [OmniumSupplierOmniumSearchResult](OmniumSupplierOmniumSearchResult.md) — Generic class for receiving search results with facets
+- [OmniumSupplierPatch](OmniumSupplierPatch.md) — Supplier patch model for partial updates. Only the fields with a value are updated, the rest of the supplier is left unchanged.
 - [OmniumSupplierSearchRequest](OmniumSupplierSearchRequest.md) — Supplier search request
+- [OmniumSupplierUpdateResult](OmniumSupplierUpdateResult.md) — Result of a supplier patch operation. TotalCount is the sum of UpdatedCount, UnchangedCount, NotFoundCount and ErrorCount.
 - [OmniumTagSettings](OmniumTagSettings.md)
+- [OmniumTaxGroup](OmniumTaxGroup.md) — A VAT rate (tax group): the rate, the VAT code of the ERP and the days it is valid on.
 - [OmniumTermsAggregationData](OmniumTermsAggregationData.md) — Terms aggregations
 - [OmniumTermsAggregationDataListOmniumBucket](OmniumTermsAggregationDataListOmniumBucket.md) — Bucket
 - [OmniumTimeEntry](OmniumTimeEntry.md) — Time entry related to project.

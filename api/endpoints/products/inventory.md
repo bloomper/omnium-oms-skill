@@ -143,6 +143,32 @@ Operation ID: `InventoryUpdateMany`
 
 ---
 
+## `PUT /api/Inventory/UpdateManyWithMetadata`
+
+**Update a range of inventory items to the OMS, optionally giving a reason for the change. Works like UpdateMany, and stores the optional reason text and reason code on the inventory transactions the update creates.**
+
+Operation ID: `InventoryUpdateManyWithMetadata`
+
+The reason text and the reason code are both optional. The reason code is stored as given. The transaction type is optional. When omitted, null or empty it defaults to Manual. Otherwise it must be one of PurchaseOrder, SalesOrder, InventoryCount, Manual, API, AtpCreated, LocationTransfer, Transfer or Cancellation (case-insensitive), and any other value is rejected with 400.
+
+Example:
+{
+    "inventoryItems": [ { "sku": "1234", "warehouseCode": "WH1", "inventory": 10 } ],
+    "reasonCode": "Damaged",
+    "reason": "Water damage in storage",
+    "transactionType": "Manual",
+    "isReservedInventoryOverwritten": false
+}
+
+**Request body:** [`OmniumInventoryUpdateManyRequest`](../../schemas/OmniumInventoryUpdateManyRequest.md) — Inventory items, optional reason text, optional reason code and optional transaction type
+
+**Responses:**
+
+- 200: Success
+- 400: string — Bad Request
+
+---
+
 ## `POST /api/Inventory/ProcessInventoryTransactions`
 
 **Perform inventory updates by specifying delta instead of total. Supports multiple updates to the same inventory item in the same request. Concurrent requests for the same inventory item are applied one after the other. If an item keeps changing under concurrent writers the request returns 409 Conflict listing the updates that were not applied; every other update in the request is persisted.**

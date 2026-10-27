@@ -112,3 +112,20 @@ Update many suppliers
 
 - 200: Success
 - 400: string — Bad Request
+
+---
+
+## `PATCH /api/Suppliers/PatchMany`
+
+**Patch many suppliers - update only the values in the request**
+
+Operation ID: `SuppliersPatchMany`
+
+Patch many suppliers
+
+**Request body:** List<[`OmniumSupplierPatch`](../schemas/OmniumSupplierPatch.md)> — List of supplier patches. Each patch must include the supplier Id, and the Ids must be unique. Max 1000 suppliers per request. Only fields with a value are updated, the rest of the supplier is left unchanged. Lists (Contacts, Addresses, StoreIds, StoreGroupIds, Tags, AssortmentCodes) replace the existing list when set, and an empty list clears it. Properties and ExternalIds are merged with the existing values. Use FieldsToForceNull to set a nullable field to null.
+
+**Responses:**
+
+- 200: [`OmniumSupplierUpdateResult`](../schemas/OmniumSupplierUpdateResult.md) — Summary of how many suppliers were updated, unchanged, not found and failed
+- 400: string — The request is empty, has more than 1000 suppliers, or has a patch without Id or with a duplicate Id

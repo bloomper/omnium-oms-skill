@@ -18,7 +18,7 @@ A first-time setup follows this order, because each step depends on the one befo
 4.  Make sure there is an `OverShort` account (or set **Over/short account number**) and, if you will post web orders, a `Receivable` account.
 5.  Turn on **Posting enabled** — and, for web orders, **Web fulfillment posting enabled** — but do not save yet. On the **Validation** tab, select **Validate** and resolve every error, then save. Several checks only run while posting is on, and validation reads the values on screen, including unsaved changes — see [Validation](ledger-config.md#validation).
 6.  For web orders, add the [Web Fulfillment Posting](../../configuration/scheduled-tasks/accounting/web-fulfillment-posting.md) scheduled task.
-7.  Optionally add [posting exclusions](ledger-posting-exclusions.md), [store-level accounts](ledger-store-accounts.md), and product tax groups.
+7.  Optionally add [posting exclusions](ledger-posting-exclusions.md), [store-level accounts](ledger-store-accounts.md), [store VAT rates](ledger-tax-groups.md#store-vat-rates), and product tax groups.
 8.  Check the first postings under **Reports → Accounting**, or run a [Posting Preview](ledger-preview.md) before going live.
 
 ## General settings
@@ -59,7 +59,7 @@ Only a card's **Save** checks the [tax-group rules](ledger-tax-groups.md#saving-
 
 ## Validation
 
-The **Validation** tab checks the accounting settings currently on screen — including unsaved changes. Select **Validate** to list each issue with a severity (`Error`, `Warning`, `Info`), an area, a message, and usually a suggested fix. Run it after editing the chart of accounts or tax groups, with **Posting enabled** turned on — several checks only run while it is on. Stores with their own accounts have a separate check — see [Store Accounts](ledger-store-accounts.md#validating-store-accounts).
+The **Validation** tab checks the accounting settings currently on screen — including unsaved changes. Select **Validate** to list each issue with a severity (`Error`, `Warning`, `Info`), an area, a message, and usually a suggested fix. Run it after editing the chart of accounts or tax groups, with **Posting enabled** turned on — several checks only run while it is on. Stores with their own accounts or VAT rates have a separate check — see [Store Accounts](ledger-store-accounts.md#validating-store-accounts).
 
 | Check | Severity | What triggers it |
 | --- | --- | --- |

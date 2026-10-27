@@ -112,6 +112,7 @@ In the order processing, the order will go through the configured order statuses
 | Condition | string | Condition for showing order status (if more statuses have the same sort order) |
 | IsCanceledStatus | bool | True if orders with this status are canceled |
 | IsDeliveredStatus | bool | True if orders with this status are delivered to the customer |
+| IsExcludedFromReservedInventory | bool | True if orders with this status do not reserve inventory in Omnium, for example because the ERP has already reserved the items. Recalculation of [reserved inventory](workflow-steps/inventory/recalculate-reserved-inventory.md) leaves these orders out, as it does orders in delivered and canceled statuses |
 | IsInProgressStatus | bool | True if orders with this status are in progress |
 | IsPicked | bool | True if orders with this status are picked. Used by picklist to set the correct status when the order is ready to ship/pick up |
 | ShipmentStatusUpdate | string | If set, the shipments on order will get this status |

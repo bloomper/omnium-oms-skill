@@ -85,15 +85,65 @@ Sample request for adding an internal comment (staff only):
        "CreatedBy": "Support Team"
     }
 
+Sample request for adding a public comment with an attachment that is emailed to the customer:
+
+    POST /api/Cart/AddComment
+    {
+       "CartId": "CART-12345",
+       "CommentType": "Public",
+       "CommentText": "Here is the offer we discussed.",
+       "SendEmail": true,
+       "EmailSubject": "Your offer",
+       "Attachments": [
+         { "ExternalUrl": "https://files.example.com/offers/12345.pdf", "FileName": "offer-12345.pdf" }
+       ]
+    }
+
 Notes:
 - CommentType defaults to "Public" if not specified. CreatedBy defaults to the current API user's username if not specified.
 - EmailTo, EmailFrom, SenderName, and SmsPhoneNumber will fall back to the store's (or global) default settings in Omnium if not specified.
 - EmailTo falls back to the cart's customer email. SmsPhoneNumber falls back to the cart's customer phone.
+- Attachments are copied from ExternalUrl into Omnium's storage, and are not sent by SMS. To send the file content
+  instead, use POST /api/Cart/AddCommentWithFiles.
 
-**Request body:** [`OmniumCartCommentRequest`](../../schemas/OmniumCartCommentRequest.md) — The comment request containing cart ID, comment type, text, and notification settings
+**Request body:** [`OmniumCartCommentRequest`](../../schemas/OmniumCartCommentRequest.md) — The comment request containing cart ID, comment type, text, attachments, and notification settings
 
 **Responses:**
 
 - 200: Comment added successfully
-- 400: string — Invalid request
+- 400: string — Invalid request, or an attachment could not be copied from its ExternalUrl
+- 404: string — Cart not found
+
+---
+
+## `POST /api/Cart/AddCommentWithFiles`
+
+**Add a comment with uploaded files to a cart, with the option to send SMS, email or both**
+
+Operation ID: `CartAddCommentWithFiles`
+
+Takes the same fields as POST /api/Cart/AddComment, sent as multipart/form-data form fields, together with the
+files to attach. The files are stored in Omnium, attached to the comment and included in the email notification.
+
+Sample request:
+
+    POST /api/Cart/AddCommentWithFiles
+    Content-Type: multipart/form-data
+
+    CartId: CART-12345
+    CommentType: Public
+    CommentText: Here is the offer we discussed.
+    SendEmail: true
+    EmailSubject: Your offer
+    files: (binary) offer-12345.pdf
+    files: (binary) photo.jpg
+
+The notes on POST /api/Cart/AddComment apply here too.
+
+**Request body:** `multipart/form-data`
+
+**Responses:**
+
+- 200: Comment added successfully
+- 400: string — Invalid request, or an empty file
 - 404: string — Cart not found

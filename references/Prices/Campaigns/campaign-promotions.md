@@ -23,6 +23,18 @@ Promotions are linked to campaigns from the campaign detail page. Linking a prom
 *   Linking does not modify the promotion's market, store, or date settings — these remain independent
 *   Linking is an organizational action for planning and performance tracking
 
+### Linking Through the API
+
+Integrations link a promotion by setting `campaignId` on the promotion with `POST /api/Promotions` or `PATCH /api/Promotions`. The campaign must exist. This works as adding the promotion on the campaign page: the campaign's dates are recalculated from its promotions, and so are the dates of the campaign the promotion leaves when it moves.
+
+| `campaignId` in the request | Result |
+| --- | --- |
+| Left out (`null`) | The promotion stays in the campaign it is in (none for a new promotion) |
+| A campaign id | The promotion joins that campaign, or moves to it |
+| Empty string (`""`) | The promotion is taken out of its campaign |
+
+`GET /api/Promotions/{id}` returns the promotion's `campaignId`, and `GET /api/Campaigns/{id}/promotions` lists the promotions in a campaign. See the [Campaign API](campaign-api.md#build-a-campaign-with-promotions-and-price-lists) for a full example with price lists.
+
 * * *
 
 ## Unlinking Promotions
@@ -34,7 +46,7 @@ To remove a promotion from a campaign:
 3.  Click **Remove** or use the context menu
 4.  The promotion is unlinked but not deleted
 
-Unlinking clears the campaign reference from the promotion. The promotion continues to function independently.
+Unlinking clears the campaign reference from the promotion. The promotion continues to function independently. Through the API, send `"campaignId": ""` on the promotion.
 
 * * *
 

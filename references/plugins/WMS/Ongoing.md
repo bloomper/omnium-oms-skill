@@ -47,14 +47,17 @@ The Ongoing integration is configured via connector options in the tenant settin
 
 | Property | Type | Description |
 | --- | --- | --- |
-| **Host** | string | The Ongoing API base URL (e.g., `https://api.ongoingwarehouse.com/`) |
-| **Username** | string | API username for authentication |
-| **Password** | string | API password for authentication |
+| **Host** | string | Base URL of your Ongoing WMS instance, without `/api/v1`, for example `https://api.ongoingsystems.se/YourWarehouse`. Omnium adds the API path itself. |
+| **Username** | string | The API user for the goods owner, created in Ongoing under **Administration → API for goods owners**. It usually starts with `WSI_`. A personal Ongoing login does not work. |
+| **Password** | string | Password of the API user |
 | **SyncOrders** | bool | Enable order status synchronization from Ongoing |
 | **SyncPurchaseOrders** | bool | Enable purchase order/delivery synchronization |
 | **SyncInventory** | bool | Enable inventory level synchronization |
 | **SyncReturns** | bool | Enable return synchronization |
+| **ExportedOrderStatus** | string | Omnium status a shipment gets when it is exported to Ongoing, and the status the order sync waits on. Defaults to `InProgressWarehouse`. Set this when your workflow uses a different status name for orders at the warehouse. |
 | **ShippedOrderStatus** | string | Omnium status a shipped order is set to when Ongoing reports it as shipped. Defaults to `ShippedFromWarehouse`. Set this when your workflow uses a different status name for shipped orders (for example `Ship`). See [Shipped Order Status](Ongoing.md#shipped-order-status). |
+| **UseWayOfDeliveryMapping** | bool | When `true`, the shipment's shipping method name is sent as the Ongoing way of delivery, and Ongoing maps it to a transporter on their side. When `false`, the transporter is sent as described in [Transporter Mapping](Ongoing.md#transporter-mapping). |
+| **KeepShortPickedRemainderOpen** | bool | When `true`, the remainder of a partly picked order line stays open on the shipment, so it is delivered when the warehouse ships the rest order. When `false` (default), the remainder is canceled. Turn it on only when your warehouse creates rest orders. |
 
 #### Example Configuration
 
@@ -63,8 +66,8 @@ The Ongoing integration is configured via connector options in the tenant settin
   "Connectors": [
     {
       "Name": "Ongoing",
-      "Host": "https://api.ongoingwarehouse.com/",
-      "Username": "your-username",
+      "Host": "https://api.ongoingsystems.se/YourWarehouse",
+      "Username": "WSI_YourApiUser",
       "Password": "your-password",
       "Properties": [
         { "Key": "SyncOrders", "Value": "true" },
@@ -127,7 +130,7 @@ Add an `ExportOrder` step to the order workflow, on the status where the order s
 2.  The system checks if the shipment's warehouse is marked as an Ongoing warehouse (`IsOngoingStore is true`)
 3.  Each shipment is exported as a separate order to Ongoing (format: `{OrderNumber}-{ShipmentId}`)
 4.  The Ongoing Order ID is stored as an external ID on the shipment
-5.  Shipment status is updated to `InProgressWarehouse`
+5.  Shipment status is updated to `InProgressWarehouse`, or to the value of `ExportedOrderStatus` when it is set
 
 ### Order Mapping
 
@@ -160,7 +163,7 @@ The `OngoingSyncScheduledTask` periodically fetches order updates from Ongoing a
 ### Sync Flow
 
 1.  Scheduled task queries Ongoing for orders changed since last sync
-2.  Each changed Ongoing order is matched to an Omnium order and shipment. Only shipments currently at `InProgressWarehouse` (the status set when the order was exported) are considered
+2.  Each changed Ongoing order is matched to an Omnium order and shipment. Only shipments currently at `InProgressWarehouse`, or the value of `ExportedOrderStatus` (the status set when the order was exported), are considered
 3.  The Ongoing status is mapped to an Omnium status via the `OngoingStatus` property on the order status configuration
 4.  If the mapped status is a shipped, picked-up, or canceled status, the shipment is advanced and its workflow runs
 5.  Tracking information (waybill, tracking URL) is updated on shipments
@@ -323,26 +326,24 @@ Add an `ExportDeliveries` step to the purchase order workflow (not a separate de
 
 ## Purchase Order Status Sync
 
-Purchase order status updates are synchronized from Ongoing to update delivery status in Omnium.
+Purchase order status updates and goods receptions are synchronized from Ongoing to the deliveries in Omnium.
 
-### Status Constants
+### Sync Flow
 
-| Status | Code | Description |
-| --- | --- | --- |
-| Ankommet | 199 | Arrived |
-| Varslet | 200 | Notified |
-| Inkommende | 300 | Incoming |
-| Avvik | 400 | Deviation |
-| Mottatt | 500 | Received |
-| Makulert | 900 | Voided |
-| Avbrutt | 1000 | Canceled |
+1.  The scheduled task fetches the Ongoing purchase orders that changed status or received goods since the last sync
+2.  Each purchase order is matched to an open Omnium delivery by its purchase order number (the delivery ID)
+3.  A purchase order with status `900` or `1000` in Ongoing sets the delivery to `Cancelled`
+4.  Otherwise, the received goods are booked as a goods reception (see [Goods Reception](Ongoing.md#goods-reception))
+5.  The Ongoing status text is stored in the `OngoingPurchaseOrderStatus` property on the delivery
 
 ### Goods Reception
+
+Every receipt in Ongoing is booked in Omnium, also a later partial receipt that does not change the status of the purchase order. For each line, only the quantity received since the last sync is booked, so a purchase order that is synced again is not booked twice.
 
 When items are received in Ongoing, the integration:
 
 1.  Calculates newly delivered quantities
-2.  Creates goods reception lines
+2.  Creates goods reception lines on the purchase order that each line belongs to
 3.  Updates delivery line item quantities
 4.  Processes inventory transactions
 
@@ -414,6 +415,7 @@ The integration implements comprehensive error handling:
 
 | Issue | Possible Cause | Solution |
 | --- | --- | --- |
+| Connection fails with "not allowed to make SOAP calls" | `Username` is a personal Ongoing login | Use the API user from **Administration → API for goods owners** in Ongoing |
 | Orders not exporting | Warehouse not configured | Verify `IsOngoingStore` property |
 | No Goods Owner ID | Missing external ID | Add `OngoingGoodsOwnerId` to store |
 | Inventory not syncing | Warehouse ID mismatch | Verify `OngoingWarehouseId` mapping |

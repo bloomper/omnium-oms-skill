@@ -66,6 +66,7 @@ These steps manage:
 | Step | Key | Description |
 | --- | --- | --- |
 | [Create Invoice](payment/create-invoice.md) | `CreateInvoice` | Generate invoice for order/shipment |
+| [Create Receipts](payment/create-receipts.md) | `CreateReceipts` | Issue the paid receipts for an order |
 
 ### Replacement Orders
 

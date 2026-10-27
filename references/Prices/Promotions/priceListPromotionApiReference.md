@@ -159,9 +159,11 @@ Both contexts are accessible from the promotion detail page, but they represent 
 
 Price list promotions provide the deepest level of campaign integration:
 
-*   **Campaign linkage** — Link the promotion to a [campaign](../Campaigns.md) for grouped tracking
+*   **Campaign linkage** — Link the promotion to a [campaign](../Campaigns.md) for grouped tracking. Through the API, set `campaignId` on the promotion
 *   **SKU-level planning** — Each price list item can have a planned sales volume, and planned revenue is calculated automatically
 *   **Performance tracking** — Actual revenue and volume are tracked per SKU and rolled up to the promotion and campaign level
+
+The campaign's **Planning** tab lists the items of the price lists whose `promotionId` is one of the campaign's promotions. When you create the price list with `POST /api/PriceLists/AddPriceList`, set `promotionId` to the promotion's id; you can also set `campaignId` to record the campaign on the price list itself. On `AddPriceList`, a `campaignId` left out keeps the price list's stored campaign and an empty string removes it. See the [Campaign API](../Campaigns/campaign-api.md#build-a-campaign-with-promotions-and-price-lists) for a full example.
 
 For more on campaign planning, see [Campaign Planning](../Campaigns/campaign-planning.md).
 

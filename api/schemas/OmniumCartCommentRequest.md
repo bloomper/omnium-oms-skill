@@ -9,6 +9,7 @@ Request model for adding a comment to a cart
 - `commentText`: string, nullable — The comment text/message content
 - `createdBy`: string, nullable — The sender/creator of the comment (e.g., external user, system or sales channel). Defaults to the current's API user's username
 - `tags`: List<string>, nullable — Tags for categorizing/filtering comments
+- `attachments`: List<[`OmniumAsset`](OmniumAsset.md)>, nullable — Files to attach to the comment. They are stored on the comment and included in the email notification. Give each attachment an ExternalUrl (and optionally a FileName); Omnium copies the file from there into its own storage. To send the file content instead, use POST /api/Cart/AddCommentWithFiles.
 - `marketId`: string, nullable — Market ID (optional, uses cart's market if not specified)
 - `sendEmail`: boolean — Send email notification to customer
 - `emailSubject`: string, nullable — Email subject line

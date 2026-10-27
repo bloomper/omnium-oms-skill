@@ -2,7 +2,7 @@
 
 Source: https://docs.omnium.no/docs/Order/Ledger/ledger-tax-groups
 
-> Tenant-managed VAT codes in Omnium — a rate, an ERP/SAF-T external code (MVA-kode), validity windows for rate changes, and how tax groups tag products, prices, and ledger lines.
+> Tenant-managed VAT codes in Omnium — a rate, an ERP/SAF-T external code (MVA-kode), validity windows for rate changes, per-store VAT rates, and how tax groups tag products, prices, and ledger lines.
 
 A **tax group** is a tenant-defined VAT code: a short stable identifier carrying a VAT **rate** and an **external code** (the ERP / SAF-T MVA-kode) that your accounting system uses on a VAT return. Tax groups tag products, prices, and order lines, and that tag flows through to the VAT code and rate on each [ledger line](ledger-postings.md).
 
@@ -61,9 +61,70 @@ Validity windows for the same code must **not overlap** — an overlap is ambigu
 
 POS postings are built from the Z-report, which totals sales and VAT by rate without tax groups. Their `Sales` and `OutputVat` lines are therefore matched to accounts by rate — see the note in [How an account is resolved](ledger-chart-of-accounts.md#how-an-account-is-resolved).
 
+For a store with its own VAT rates, carts and web-fulfillment postings resolve these groups against the store's rates — see [Store VAT rates](ledger-tax-groups.md#store-vat-rates).
+
+## Store VAT rates
+
+A store that sells under another VAT scheme than the rest of the tenant — for example one webshop store per country on a single market — can have **its own VAT rates**. They are edited under **Stores** → select the store → **Information → Accounting → VAT rates**, which is shown when tax groups are enabled.
+
+*   **A store row replaces every tenant row with the same code**, with all of its validity windows, so the store keeps its own rate-change dates. Every other tenant VAT rate still applies to the store.
+*   **The code must exist in the tenant VAT rates.** You pick it from the tenant codes, and the tenant's rate for the code is shown beside it. Products and prices keep referring to the tenant codes.
+*   **An inactive store row** still replaces the tenant rows with its code, which switches that code off for the store.
+*   **Copy tenant VAT rates** copies the tenant rows whose code the store does not replace yet, so you only change the rates that differ.
+*   **The default tax group stays a tenant setting.** A store that replaces the default code uses its own row for it.
+*   **A store with no rows of its own** uses the tenant VAT rates as they stand.
+
+The In-Store app does not support store VAT rates yet — it is sent the tenant VAT rates. Do not give a store that sells through the In-Store app its own VAT rates.
+
+### Saving a store with its own VAT rates
+
+Saving the store is refused when one of its own rows breaks a rule:
+
+*   the row has no code, or a code the tenant does not have;
+*   the rate is negative, or **Valid from** is after **Valid to**;
+*   active rows with the same code have overlapping validity windows;
+*   when tax groups are enabled, the store replaces the default tax group but none of its rows for that code is active and valid today.
+
+When the store's VAT rates are saved unchanged, they are accepted even when they no longer pass — for example after a code was removed from the tenant VAT rates — so other changes to the store can still be saved. Changing any of the rows checks all of them again. When tax groups are enabled, saving the tenant settings then warns which stores still have codes the tenant does not have.
+
+When tax groups are enabled, the store's **Validate** view also checks that the store's accounts merged over the tenant chart have a `Sales` account, and an `OutputVat` account unless the group is outside VAT scope, for each of the store's own active codes — matched on the code, on the store's rate, or by a catch-all entry. A row with override accounts set counts as covered, although postings do not use them. See [Store Accounts](ledger-store-accounts.md#validating-store-accounts).
+
+### What the store's VAT rates change
+
+*   **Cart lines** take the tax group, VAT code, and rate from the store of the cart. A line priced from a price row without a tax group code, such as a price-list row, takes the tax group of its product, or the default tax group when the product has none. A product with its own **Tax rate** but no tax group keeps that rate. Prices including VAT keep their amount; prices excluding VAT are converted at the store's rate.
+*   **Moving a cart to another store** resolves the VAT of its lines again when either store has its own VAT rates. The line prices do not change.
+*   **Lines, shipping, and fees without a rate of their own** get the rate of the store's default tax group instead of the market's default rate: shipping options and shipping for a cart, shipping on orders (including shipping added to an existing order), lines added to an existing order, exchange lines, package component lines, and return fees. A shipment with a tax group code, or with a shipping method that has one, gets the store's rate for that code — see [Tax group on a shipping method](ledger-tax-groups.md#tax-group-on-a-shipping-method). Without a code, return shipping takes the rate of the store's default tax group instead of the shipping option's rate.
+*   **Promotion base prices** are converted at the rate of the line they apply to.
+*   **Web-fulfillment postings** look up a line without a tax group by its rate in the store's VAT rates.
+*   **Prices stored on products** keep the tenant rate; the cart applies the store's rate when the line is priced.
+
+The `GET /api/Stores/{storeId}/TaxGroups` endpoint returns the VAT rates a store sells under, and the store's own rows can be read and written as `taxGroups` on the store — see the [Store API](../../Stores/store-api.md).
+
+### Set up a store with its own VAT rates
+
+1.  Add every code the store uses to the tenant VAT rates first.
+2.  On the store, open **Information → Accounting → VAT rates**, select **Copy tenant VAT rates**, change the rates and VAT codes that differ, and delete the rows you did not change.
+3.  Give products a tax group instead of a **Tax rate** of their own. A product with its own **Tax rate** and no tax group keeps that rate in every store. Give shipping methods a **VAT code** the same way — see [Tax group on a shipping method](ledger-tax-groups.md#tax-group-on-a-shipping-method).
+4.  Create carts with the store's ID. A cart created without a store ID gets the user's default store, the market's default store, or the default warehouse, and with it that store's VAT rates.
+5.  Add [store accounts](ledger-store-accounts.md) for the store's rates where they need other accounts than the tenant chart, and run the store's **Validate** view.
+
 ## Tax group on a product
 
 When tax groups are enabled, a product's **Settings** tab shows a **Code** field in the **Tax** section — the product's tax group — listing the active tax-group codes. Leave it empty to use the default tax group — unless the product has its own **Tax rate**, in which case it gets no group; the placeholder names the default (`Default tax group: HIGH`). Choosing a group also sets the VAT rate the product is sold at.
+
+## Tax group on a shipping method
+
+When tax groups are enabled, the shipping method form in the tenant settings shows a **VAT code** field listing the active tax-group codes. The code is stored as `taxGroupCode` on the shipping method.
+
+*   **With a VAT code**, shipping is charged the rate the code has for the order's store: the store's own row for the code when it has one, otherwise the tenant's. The **Tax rate** field is hidden and not used, and a 0 % code gives 0 % VAT.
+*   **Shipping options** for a cart are calculated at that rate for the cart's store, and return the code as `taxGroupCode`. A provider price excluding VAT (**Add tax on provider price**) has that rate added. Shipping options for a postal code, without a cart, use the tenant's rate.
+*   **A shipment without a rate and without shipping tax** gets the VAT code of its shipping method, found by its shipping method name on the order's market, and with it the rate and the external VAT code. A rate or a shipping tax sent on the shipment is kept, and a tax group code on the shipment itself wins over the method's. A shipment sent with a rate but no code gets the method's code and external VAT code when the code has that rate for the store.
+*   **Shipping added in Omnium** takes the method's VAT code and shows the rate for the order's store. Typing another tax rate on the shipment removes the code.
+*   **Changing the shipping method** of a shipment resolves its VAT again for the new method's price when **Update totals on shipment change** is on in the order settings and the old or the new method has a VAT code that resolves for the store. Otherwise the shipment keeps its rate, as it keeps its price.
+*   **Returns** credit and charge shipping at the rate of the method's VAT code for the order's store.
+*   **Web-fulfillment postings** post the shipping VAT on the shipment's code and external VAT code.
+*   **Saving the tenant settings** warns about every shipping method whose VAT code the tenant VAT rates do not have. Such a code never resolves, so the method's shipping is charged as if it had no code.
+*   **Without a VAT code**, shipping works as before: the method's **Tax rate**, otherwise the store's default tax group for a store with its own VAT rates, otherwise the market's default rate.
 
 ## Presets
 

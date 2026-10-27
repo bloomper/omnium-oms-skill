@@ -13,6 +13,7 @@ Each order follows a lifecycle defined by its **order type**, moving through sta
 ## In this section
 
 *   [API Reference](Order/api-reference.md) — Import, update, search, and manage orders via the API
+*   [Invoices API](Order/invoices-api.md) — Read the invoices, receipts and credit notes of an order, and download them as PDF
 *   [Configuration](Order/order-config.md) — Order types, statuses, workflow configuration, and settings
 *   [Order Lifecycle](Order/order-lifecycle.md) — How orders flow from creation to completion, with statuses and transitions
 *   [Order Locking](Order/order-locking.md) — Concurrent order updates, the optional per-order lock, and the 409 ResourceLocked response
@@ -20,6 +21,7 @@ Each order follows a lifecycle defined by its **order type**, moving through sta
 *   [Pick Lists](Order/order-pick-lists.md) — Grouping shipments for picking — statuses, deviation handling, and the Pick List API
 *   [Returns](https://docs.omnium.no/docs/Order/Returns) — Return API, configuration, and return workflow steps
 *   [Workflow Steps Reference](Order/workflow-steps.md) — All available workflow steps — allocation, payment, inventory, shipments, and more
+*   [Allocation Simulator (BETA)](Order/Allocation/allocation-simulator.md) — See which warehouses an order would ship from, and why, without changing anything
 *   [Workflows Overview](Order/workflow-steps.md) — How workflows are structured and how order types connect to them
 *   [Ledger](Order/Ledger.md) — Accounting postings — double-entry vouchers, chart of accounts, VAT codes, and export
 *   [FAQ](Order/order-faq.md) — Common questions about order handling in Omnium

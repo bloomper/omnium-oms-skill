@@ -120,8 +120,9 @@ Operation ID: `OrdersGetOrdersForPickUpPoint`
 Operation ID: `OrdersGetOrdersWithReservedInventory`
 
 Returns non-delivered orders (based on the delivered-status configuration per order type) that have an
-order line with the given SKU shipping from the given warehouse. If the warehouse is a virtual warehouse,
-orders are matched on the virtual warehouse and its first physical warehouse.
+order line with the given SKU shipping from the given warehouse. Orders in a status that is excluded from
+reserved inventory in the order type are left out, as they hold no reservation. If the warehouse is a
+virtual warehouse, orders are matched on the virtual warehouse and its first physical warehouse.
 
 By default only orders that actively reserve warehouse stock are returned: orders created within the last
 two years (the reserved-quantity calculation window) whose order line for the SKU is not fully cancelled,

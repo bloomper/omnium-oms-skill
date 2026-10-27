@@ -28,6 +28,7 @@ The Ledger is **off by default** and enabled per tenant. Posting generation and 
 *   [Postings in the UI](Ledger/ledger-reports.md) — Browse postings under Reports, inspect ledger lines, export CSV, and run the Accounting Ledger custom report
 *   [Posting Preview (dry run)](Ledger/ledger-preview.md) — Preview the postings an order or date range would generate, without committing them
 *   [API Reference](Ledger/api-reference.md) — Read postings and ledger lines through the public Accounting API
+*   [Export to an Accounting System](Ledger/ledger-accounting-export.md) — How POS and web postings fit together, and how to book them as vouchers from the Accounting API
 
 * * *
 

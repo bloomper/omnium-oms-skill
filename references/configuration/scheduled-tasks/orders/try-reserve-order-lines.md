@@ -40,6 +40,7 @@ This task has no configurable properties.
 ### What It Does
 
 1.  Retrieves all orders in non-delivered statuses, sorted by creation date (oldest first)
+    *   Skips orders in a status with `IsExcludedFromReservedInventory: true` in the order type config. These orders do not reserve inventory, so they do not take stock from the orders that do
 2.  Calculates effective reserved inventory based on current order line reservations
 3.  For each order and shipment:
     *   Identifies unreserved line items (excluding those reserved on purchase orders)

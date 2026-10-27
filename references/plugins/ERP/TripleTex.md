@@ -51,17 +51,27 @@ Upon completion of the order, payments are automatically posted to the desired a
 
 ## Authentication
 
-Omnium connects to Tripletex as an integration with the application name `Omnium_OMS`. The connector creates and renews the session token itself from an employee token that the customer creates in Tripletex.
+Omnium connects to Tripletex as an integration with the application name `Omnium_OMS` in production. The connector creates and renews the session token itself from an employee token that the customer creates in Tripletex.
 
 ### Create the employee token in Tripletex
 
 The token must be created by a user in the Tripletex company that Omnium should post to:
 
 1.  Log in to Tripletex and activate the Integrations service if it is not already active.
+
 2.  Open the **API access** tab for the user who should own the token, and click **New token**.
-3.  Select **Adapted setup** and enter `Omnium_OMS` as the application name. The name is case sensitive.
+
+3.  Select **Adapted setup** and enter the application name for the Tripletex environment. The name is case sensitive.
+
+    | Environment | Application name |
+    | --- | --- |
+    | Tripletex production (`tripletex.no`) | `Omnium_OMS` |
+    | Tripletex test environment (`api-test.tripletex.tech`) | `61917593-4108-4570-9746-780ea6893a9e` |
+
 4.  Give the token all entitlements, or the same entitlements as the owner.
+
 5.  Copy the token. Tripletex shows it only once. If it is lost, create a new token for the same integration. This invalidates the previous token.
+
 6.  Add the token to the Tripletex connector in Omnium, as described in [Add the token to the connector](TripleTex.md#add-the-token-to-the-connector).
 
 Tripletex has a guide for end users: [Create an employee token](https://hjelp.tripletex.no/hc/no/articles/4409557117713).
@@ -77,7 +87,12 @@ Add the employee token as a property on the Tripletex connector:
 }
 ```
 
-The host of the connector must be `https://tripletex.no/v2/`. This also applies to test companies in Tripletex.
+Set the host of the connector to the Tripletex environment. The host must end with `/`.
+
+| Environment | Host |
+| --- | --- |
+| Tripletex production, including test companies in `tripletex.no` | `https://tripletex.no/v2/` |
+| Tripletex test environment | `https://api-test.tripletex.tech/v2/` |
 
 > A connector without `EmployeeToken` uses a session token in the password field instead. Session tokens expire, and Tripletex then rejects every request with `401 Unauthorized`. Replace the session token with an employee token.
 

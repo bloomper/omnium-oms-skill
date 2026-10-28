@@ -13,14 +13,16 @@ All endpoints are available at `https://apitest.omnium.no/api/Campaigns` (test) 
 ### What you can do
 
 *   Create and update campaigns with markets, stores, tags, and custom properties
+*   Give a campaign its campaign code (`externalIds`) and the same campaign in an earlier year (`previousCampaignId`)
+*   Read a campaign's status timeline and milestones
 *   Search and filter campaigns by date range, status, market, and more
 *   Transition campaigns through their lifecycle (Planning → Active → Completed → Archived)
-*   Retrieve promotion IDs linked to a campaign
+*   Retrieve promotion IDs linked to a campaign (promotions are linked with `campaignId` on the [Promotions API](campaign-api.md#build-a-campaign-with-promotions-and-price-lists))
 *   Delete campaigns (with automatic promotion unlinking)
 
 ### What the Campaign API does not do
 
-Campaign API manages the campaign container itself. To manage the promotions within a campaign, use the [Promotions API](../Promotions.md). To set SKU-level pricing, use the [Price Lists API](../PriceLists.md). The relationship looks like this:
+Campaign API manages the campaign container itself. To manage the promotions within a campaign, use the [Promotions API](../Promotions.md): a promotion joins a campaign through its `campaignId`. To set SKU-level pricing, use the [Price Lists API](../PriceLists.md): a price list is planned under the campaign of the promotion it belongs to. The relationship looks like this:
 
 ```
   ┌──────────────────────────────────────┐
@@ -31,13 +33,14 @@ Campaign API manages the campaign container itself. To manage the promotions wit
                  │
                  │  GET /api/Campaigns/{id}/promotions
                  │  (returns promotion IDs)
+                 │  ▲ promotion.campaignId links it
                  ▼
   ┌──────────────────────────────────────┐
   │         Promotions API               │
   │   POST /api/Promotions               │
   │   Define discount rules              │
   └──────────────┬───────────────────────┘
-                 │
+                 │  priceList.promotionId links it
                  ▼
   ┌──────────────────────────────────────┐
   │        Price Lists API               │
@@ -78,7 +81,7 @@ The API returns campaigns using the `OmniumCampaign` model.
 | `Tags` | `string[]` | Labels for categorization and filtering (e.g., `["seasonal", "clearance"]`). |
 | `StartDate` | `datetime` | When the campaign begins. **Required.** |
 | `EndDate` | `datetime` | When the campaign ends. Must be after `StartDate`. **Required.** |
-| `Status` | `string` | Lifecycle status: `Planning`, `Active`, `Completed`, or `Archived`. |
+| `Status` | `string` | Lifecycle status: the name of one of the [campaign statuses](campaign-api.md#campaign-statuses) configured for your environment. Without configured statuses: `Planning`, `Active`, `Completed`, or `Archived`. |
 | `Markets` | `string[]` | Market IDs where the campaign applies (e.g., `["NOR", "SWE"]`). |
 | `Stores` | `string[]` | Store IDs where the campaign targets. Empty means all stores. |
 | `PlanningNotes` | `string` | Internal notes for the planning phase. |
@@ -86,6 +89,52 @@ The API returns campaigns using the `OmniumCampaign` model.
 | `UpdatedDate` | `datetime?` | When the campaign was last updated. Read-only (set by server). |
 | `Properties` | `OmniumPropertyItem[]` | Custom key-value pairs for extensibility. |
 | `Errors` | `OmniumEntityError[]` | Validation or processing errors. Read-only (set by server). |
+| `InternalComments` | `OmniumComment[]` | Internal comments on the campaign. Read-only. |
+| `ExternalIds` | `OmniumExternalId[]` | Identifiers of the campaign in other systems, one per provider. The first one is shown as the campaign code in Omnium. |
+| `PreviousCampaignId` | `string` | The same campaign in an earlier year. The follow-up uses its actual sales as the campaign's last year. |
+| `Milestones` | `OmniumCampaignMilestone[]` | Read-only. The campaign's deadlines that are not statuses, one per [milestone type](campaign-settings.md#give-every-campaign-milestones-and-deadlines) configured for your environment. |
+| `StatusSteps` | `OmniumCampaignStatusStep[]` | Read-only. The campaign's status timeline, one step per configured status, in status order. |
+
+### OmniumExternalId
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `ProviderName` | `string` | The system the id belongs to, such as `Erp` |
+| `Id` | `string` | The campaign's id in that system |
+
+### OmniumCampaignMilestone
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `Key` | `string` | Key of the milestone type. `PlanningStart` is the day planning opens. |
+| `Name` | `string` | Display name of the milestone |
+| `Date` | `datetime?` | The deadline. `null` when the campaign has no start date to count it from. |
+| `IsCompleted` | `bool` | The milestone has been marked as done |
+| `IsManuallySet` | `bool` | A user set the date. A date set by hand stays when the start date moves; the others move with it. |
+
+### OmniumCampaignStatusStep
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `Name` | `string` | Name of the status |
+| `Order` | `int` | Position of the status in the configured sequence |
+| `Date` | `datetime?` | The planned date before the campaign enters the status; the date it entered it after |
+| `IsActivated` | `bool` | The campaign has entered the status |
+
+Milestones and status steps are edited in the Omnium UI. The API returns them but does not set them; a create or update fills and moves them from the campaign's start date as described under [Update a Campaign](campaign-api.md#update-a-campaign), and a status change through [Update Campaign Status](campaign-api.md#update-campaign-status) activates and dates the step of the new status.
+
+### Campaign statuses
+
+The statuses a campaign can have are configured per environment, under **Configuration → Settings → Orders → Promotion → Campaign Statuses** (see [Campaign Settings](campaign-settings.md#lock-the-plan-with-a-locked-campaign-status)). Each status has a name, an order and its available next steps. An environment that configures none uses the four default statuses:
+
+| Status | Available next steps |
+| --- | --- |
+| `Planning` | `Active` |
+| `Active` | `Completed`, `Planning` |
+| `Completed` | `Archived` |
+| `Archived` | (none) |
+
+Wherever the API takes a status (`Status` on create and update, `status` on the status change, `Statuses` in the search), it is the status **name**, compared case-sensitively. A name that is not configured answers `400 Bad Request` with the configured names, for example `"Invalid status. Valid values: Planning, Locked, Active, Completed, Archived"` in an environment that adds a `Locked` status.
 
 ### OmniumPropertyItem
 
@@ -132,7 +181,33 @@ curl -X GET "https://apitest.omnium.no/api/Campaigns/abc-123" \
   "createdDate": "2026-03-15T10:30:00Z",
   "updatedDate": "2026-03-18T14:22:00Z",
   "properties": [],
-  "errors": []
+  "errors": [],
+  "externalIds": [
+    { "providerName": "Erp", "id": "260601" }
+  ],
+  "previousCampaignId": "summer-sale-2025",
+  "milestones": [
+    {
+      "key": "PlanningStart",
+      "name": "Planning start",
+      "date": "2026-03-01T00:00:00",
+      "isCompleted": true,
+      "isManuallySet": false
+    },
+    {
+      "key": "StoreOrder",
+      "name": "Store order deadline",
+      "date": "2026-05-04T00:00:00",
+      "isCompleted": false,
+      "isManuallySet": true
+    }
+  ],
+  "statusSteps": [
+    { "name": "Planning", "order": 1, "date": "2026-03-15T10:30:00Z", "isActivated": true },
+    { "name": "Active", "order": 2, "date": "2026-06-01T00:00:00", "isActivated": false },
+    { "name": "Completed", "order": 3, "date": null, "isActivated": false },
+    { "name": "Archived", "order": 4, "date": null, "isActivated": false }
+  ]
 }
 ```
 
@@ -155,7 +230,7 @@ Search and filter campaigns with pagination. This is the primary way to list cam
 | `StartTo` | `datetime?` | — | Campaigns that start on or before this date |
 | `EndFrom` | `datetime?` | — | Campaigns that end on or after this date |
 | `EndTo` | `datetime?` | — | Campaigns that end on or before this date |
-| `Statuses` | `string[]` | — | Filter by statuses. Empty means all. Values: `Planning`, `Active`, `Completed`, `Archived` |
+| `Statuses` | `string[]` | — | Filter by statuses. Empty means all. Values: the configured [campaign status](campaign-api.md#campaign-statuses) names, by default `Planning`, `Active`, `Completed`, `Archived` |
 | `MarketIds` | `string[]` | — | Filter by market IDs |
 | `StoreIds` | `string[]` | — | Filter by store IDs |
 | `Tags` | `string[]` | — | Filter by tags |
@@ -252,11 +327,13 @@ Creates a new campaign. Returns the created campaign with server-set fields (`Id
 | `Tags` | `string[]` | No | Categorization labels |
 | `StartDate` | `datetime` | **Yes** | Campaign start date |
 | `EndDate` | `datetime` | **Yes** | Campaign end date (must be after `StartDate`) |
-| `Status` | `string` | No | Initial status. Defaults to `Planning` if omitted. Must be a valid status. |
+| `Status` | `string` | No | Initial status: one of the configured [campaign statuses](campaign-api.md#campaign-statuses). Defaults to the first configured status (`Planning` by default) if omitted. |
 | `Markets` | `string[]` | No | Market IDs |
 | `Stores` | `string[]` | No | Store IDs |
 | `PlanningNotes` | `string` | No | Internal planning notes |
 | `Properties` | `OmniumPropertyItem[]` | No | Custom key-value pairs |
+| `ExternalIds` | `OmniumExternalId[]` | No | Identifiers of the campaign in other systems, one per provider. The first one is the campaign code. |
+| `PreviousCampaignId` | `string` | No | The same campaign in an earlier year. Must be another existing campaign. |
 
 **Response:** `201 Created` with the full `OmniumCampaign` body.
 
@@ -264,7 +341,8 @@ Creates a new campaign. Returns the created campaign with server-set fields (`Id
 
 *   `Name` must not be empty
 *   `EndDate` must be after `StartDate`
-*   `Status` (if provided) must be one of: `Planning`, `Active`, `Completed`, `Archived`
+*   `Status` (if provided) must be the name of a configured [campaign status](campaign-api.md#campaign-statuses), case-sensitive
+*   `PreviousCampaignId` (if provided) must be an existing campaign other than this one
 
 **Example — Create a basic campaign:**
 
@@ -279,7 +357,9 @@ curl -X POST "https://apitest.omnium.no/api/Campaigns" \
     "endDate": "2026-11-30T23:59:59",
     "markets": ["NOR", "SWE", "DNK"],
     "tags": ["black-friday", "seasonal"],
-    "planningNotes": "Coordinate with marketing team. Budget: 200k NOK."
+    "planningNotes": "Coordinate with marketing team. Budget: 200k NOK.",
+    "externalIds": [{ "providerName": "Erp", "id": "261101" }],
+    "previousCampaignId": "black-friday-2025"
   }'
 ```
 
@@ -311,7 +391,7 @@ curl -X POST "https://apitest.omnium.no/api/Campaigns" \
 PUT /api/Campaigns/{id}
 ```
 
-Replaces an existing campaign with the provided data. This is a full replacement — all fields in the request body overwrite the existing values. Fields you omit will be cleared (except server-managed fields like `CreatedDate`).
+Replaces an existing campaign with the provided data. This is a full replacement — all fields in the request body overwrite the existing values. Fields you omit will be cleared, except server-managed fields like `CreatedDate` and the fields listed under **Important behavior** below.
 
 **Request body:** Same as Create (`OmniumCampaignRequest`).
 
@@ -322,7 +402,11 @@ Replaces an existing campaign with the provided data. This is a full replacement
 *   The `Id` in the URL takes precedence over any `Id` in the request body
 *   `CreatedDate` is preserved from the original campaign
 *   If `Status` is omitted or empty, the existing status is preserved
+*   A `Status` must be a configured [campaign status](campaign-api.md#campaign-statuses) or the one already stored. It is saved as given: the update does not check the transition rules, activate the status step or run the status workflow. Use [Update Campaign Status](campaign-api.md#update-campaign-status) to move a campaign to its next status
 *   Server-managed fields (such as `CreatedDate`, `Errors`) are preserved
+*   `ExternalIds` and `PreviousCampaignId` are often set in the Omnium UI, so they are preserved when the request leaves them out (`null`). An empty list (`"externalIds": []`) removes the external ids, and an empty string (`"previousCampaignId": ""`) removes the previous campaign
+*   `PreviousCampaignId` must be an existing campaign other than the one you update; the one already stored is accepted as it is
+*   The campaign's status step dates and [milestones](campaign-settings.md#give-every-campaign-milestones-and-deadlines) are preserved. When you change `startDate`, milestone dates that nobody has set by hand move by the same number of days, and so do default status step dates that are neither set by hand nor activated. Later status steps without a date get their default date. Every update of a campaign with a start date also adds the milestones of milestone types configured since
 
 **Example — Update campaign dates and add a store filter:**
 
@@ -341,7 +425,7 @@ curl -X PUT "https://apitest.omnium.no/api/Campaigns/abc-123" \
   }'
 ```
 
-> Since PUT is a full replacement, include all fields you want to keep. For example, if the campaign had `Tags` and you omit `Tags` in the PUT request, the tags will be cleared.
+> Since PUT is a full replacement, include all fields you want to keep. For example, if the campaign had `Tags` and you omit `Tags` in the PUT request, the tags will be cleared. `ExternalIds` and `PreviousCampaignId` are the exception: leave them out to keep them.
 
 * * *
 
@@ -372,7 +456,7 @@ curl -X DELETE "https://apitest.omnium.no/api/Campaigns/abc-123" \
 PATCH /api/Campaigns/{id}/status
 ```
 
-Transitions a campaign to a new lifecycle status. This is the recommended way to change status — it triggers any configured workflow actions (such as notifications) and validates the transition.
+Moves a campaign to a new lifecycle status, the same way a status change on the campaign page does. This is the way to change status: the move is checked against the configured transitions, the status step of the new status is activated and dated, and the workflow steps configured for the new status run (for example notification emails or SMS messages).
 
 **Request body:**
 
@@ -384,11 +468,20 @@ Transitions a campaign to a new lifecycle status. This is the recommended way to
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `status` | `string` | **Yes** | Target status: `Planning`, `Active`, `Completed`, `Archived` |
+| `status` | `string` | **Yes** | Name of the target status: one of the configured [campaign statuses](campaign-api.md#campaign-statuses), case-sensitive, that is an available next step of the campaign's current status |
 
-**Response:** `200 OK` with updated `OmniumCampaign`, `404 Not Found`, or `400 Bad Request` (invalid status value).
+**Response:** `200 OK` with the updated `OmniumCampaign`, `404 Not Found`, or `400 Bad Request`:
+
+| When | Message |
+| --- | --- |
+| `status` is missing | `"Status is required"` |
+| `status` is not a configured status | `"Invalid status. Valid values: Planning, Active, Completed, Archived"` (the configured names) |
+| The current status does not list `status` as an available next step | `"Invalid status transition from 'Planning' to 'Completed'. Allowed next statuses: Active."` |
+| The current status has no next steps | `"Invalid status transition from 'Archived' to 'Active'. A campaign in 'Archived' cannot change status."` |
 
 **Status transition rules:**
+
+A campaign can move only to a status that its current status lists as an available next step. A status with no available next steps configured at all can move to any configured status. With the default statuses:
 
 ```
   Planning  ──→  Active  ──→  Completed  ──→  Archived
@@ -396,18 +489,20 @@ Transitions a campaign to a new lifecycle status. This is the recommended way to
                    └──→  Planning  (rollback)
 ```
 
-| From | Allowed Transitions |
-| --- | --- |
-| `Planning` | → `Active` |
-| `Active` | → `Completed`, → `Planning` (rollback) |
-| `Completed` | → `Archived` |
-| `Archived` | (no transitions) |
+An environment with a locked status typically moves `Planning → Locked → Active`, so a `Planning` campaign must be locked before it can go live:
 
-> Your Omnium environment may be configured with additional statuses and transitions. Use `Planning → Active → Completed → Archived` as the standard flow.
+```
+curl -X PATCH "https://apitest.omnium.no/api/Campaigns/abc-123/status" \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{ "status": "Locked" }'
+```
+
+The `AutoTransitionCampaignsScheduledTask` scheduled task makes the same moves on the dates of the status steps, so you only need this endpoint for moves you want to make before or without those dates.
 
 **What happens on status change:**
 
-When you change a campaign's status, the system may execute configured workflow steps — for example, sending notification emails or SMS messages to relevant stakeholders. The workflow is configured per status in your environment settings.
+When you change a campaign's status, the workflow steps configured for the new status run, for example sending notification emails or SMS messages to relevant stakeholders. A workflow step that fails is logged and does not undo the status change.
 
 **Example — Activate a campaign:**
 
@@ -450,11 +545,105 @@ curl -X GET "https://apitest.omnium.no/api/Campaigns/abc-123/promotions" \
 ["promo-001", "promo-002", "promo-003"]
 ```
 
-> Promotion linking and unlinking is currently done through the Omnium UI. The public API provides read access to the linked promotion IDs.
+> To link a promotion to the campaign, or move or remove it, set `campaignId` on the promotion with `POST /api/Promotions` or `PATCH /api/Promotions`. See [Build a campaign with promotions and price lists](campaign-api.md#build-a-campaign-with-promotions-and-price-lists).
 
 * * *
 
 ## Common Integration Patterns
+
+### Build a campaign with promotions and price lists
+
+A campaign's **Planning** tab lists the items of the price lists that belong to the campaign's promotions. To build a planned campaign through the API, create the campaign, then the promotions with `campaignId`, then their price lists with `promotionId`, then the items:
+
+```
+  Campaign  ◄── campaignId ──  Promotion  ◄── promotionId ──  Price list  ◄── priceListId ──  Items
+```
+
+**Step 1:** Create the campaign, with its campaign code and last year's campaign:
+
+```
+curl -X POST "https://apitest.omnium.no/api/Campaigns" \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id": "black-friday-2026",
+    "name": "Black Friday 2026",
+    "startDate": "2026-11-20T00:00:00",
+    "endDate": "2026-11-30T23:59:59",
+    "markets": ["NOR"],
+    "externalIds": [{ "providerName": "Erp", "id": "261101" }],
+    "previousCampaignId": "black-friday-2025"
+  }'
+```
+
+**Step 2:** Create a price list promotion in the campaign. `campaignId` must be an existing campaign:
+
+```
+curl -X POST "https://apitest.omnium.no/api/Promotions" \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id": "bf26-shoes",
+    "name": "Black Friday shoes",
+    "activeFrom": "2026-11-20T00:00:00",
+    "activeTo": "2026-11-30T23:59:59",
+    "markets": ["NOR"],
+    "campaignId": "black-friday-2026",
+    "promotionData": { "promotionType": 6, "priceListId": "bf26-shoes" }
+  }'
+```
+
+**Step 3:** Create the promotion's price list. `promotionId` puts it under the campaign; `campaignId` records the campaign on the price list too:
+
+```
+curl -X POST "https://apitest.omnium.no/api/PriceLists/AddPriceList" \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id": "bf26-shoes",
+    "name": "Black Friday shoes",
+    "currencyCode": "NOK",
+    "marketIds": ["NOR"],
+    "promotionId": "bf26-shoes",
+    "campaignId": "black-friday-2026",
+    "isStoreCostPriceEnabled": true,
+    "storeCostPriceMarketIds": ["NOR"]
+  }'
+```
+
+**Step 4:** Add the items with their campaign prices and planning figures:
+
+```
+curl -X POST "https://apitest.omnium.no/api/PriceLists/AddPriceListItems" \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '[
+    {
+      "priceListId": "bf26-shoes",
+      "skuId": "SHOE-1042-42",
+      "unitPrice": 1299.00,
+      "discountedPrice": 899.00,
+      "cost": 420.00,
+      "standardCost": 410.00,
+      "storeCostPrice": 610.00,
+      "plannedSalesVolume": 120,
+      "planningComment": "Same volume as last year"
+    }
+  ]'
+```
+
+`AddPriceListItems` and `PatchPriceListItems` accept the same item fields, including the store cost fields `storeCostPrice`, `storeCostDiscount`, `storeCostDiscountPercent` and `storeCostPriceAdditionPercent`.
+
+Linking a promotion with `campaignId` works as adding it on the campaign page: the campaign's start and end dates are recalculated from the dates of its promotions, and so are those of the campaign the promotion leaves. On the promotion and price list endpoints, `campaignId` left out (`null`) keeps the stored campaign, and an empty string removes it.
+
+**Move or remove a promotion:** send only the campaign in a patch. A patch that changes nothing but the campaign does not save the promotion itself, so its prices are not rebuilt:
+
+```
+curl -X PATCH "https://apitest.omnium.no/api/Promotions" \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{ "id": "bf26-shoes", "campaignId": "" }'
+```
 
 ### ERP Campaign Sync
 
@@ -485,7 +674,7 @@ A typical ERP integration creates campaigns in Omnium to match campaign plans fr
   └────────────┘ + Get  └───────────────┘
 ```
 
-**Step 1:** ERP creates the campaign via `POST /api/Campaigns` with an ERP reference in `Properties`:
+**Step 1:** ERP creates the campaign via `POST /api/Campaigns` with the ERP campaign number as its campaign code in `ExternalIds`:
 
 ```json
 {
@@ -493,13 +682,13 @@ A typical ERP integration creates campaigns in Omnium to match campaign plans fr
   "startDate": "2026-04-01T00:00:00",
   "endDate": "2026-06-30T23:59:59",
   "markets": ["NOR"],
-  "properties": [
-    { "key": "ErpCampaignId", "value": "ERP-2026-Q2-CLR", "keyGroup": "ERP" }
+  "externalIds": [
+    { "providerName": "Erp", "id": "ERP-2026-Q2-CLR" }
   ]
 }
 ```
 
-**Step 2:** Merchandising team links promotions and sets targets in the Omnium UI.
+**Step 2:** Merchandising team links promotions and sets targets in the Omnium UI, or the ERP creates the promotions with `campaignId` as shown [above](campaign-api.md#build-a-campaign-with-promotions-and-price-lists).
 
 **Step 3:** ERP activates the campaign via `PATCH /api/Campaigns/{id}/status`.
 
@@ -548,7 +737,7 @@ All endpoints follow a consistent error pattern:
 | `200 OK` | Success | GET, PUT, PATCH |
 | `201 Created` | Resource created | POST (create) |
 | `204 No Content` | Deleted successfully | DELETE |
-| `400 Bad Request` | Validation error | Missing `Name`, invalid `Status`, `EndDate` before `StartDate`, pagination limits exceeded |
+| `400 Bad Request` | Validation error | Missing `Name`, a `Status` that is not configured, a status change the current status does not allow, `EndDate` before `StartDate`, unknown `PreviousCampaignId` or the campaign itself, pagination limits exceeded |
 | `404 Not Found` | Campaign not found | GET, PUT, PATCH, DELETE with non-existent ID |
 | `401 Unauthorized` | Missing or invalid token | Any endpoint |
 | `403 Forbidden` | Insufficient permissions | Write operations without `PromotionAdmin` role |
@@ -565,7 +754,15 @@ All endpoints follow a consistent error pattern:
 ```
 
 ```
+"Invalid status transition from 'Planning' to 'Completed'. Allowed next statuses: Active."
+```
+
+```
 "Take cannot exceed 200"
+```
+
+```
+"Previous campaign black-friday-2025 was not found"
 ```
 
 * * *

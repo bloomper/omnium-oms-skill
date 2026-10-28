@@ -6,7 +6,7 @@ Source: https://docs.omnium.no/docs/Order/Ledger/ledger-store-accounts
 
 Most stores book to the tenant [Chart of Accounts](ledger-chart-of-accounts.md). When a store needs different accounts — its own cash account, its own revenue account, or a separate company's account numbers — you add **store accounts** that replace only the tenant entries they match. Every other tenant entry still applies to the store.
 
-Store accounts are edited under **Stores** → select the store → **Information → Accounting**, which has three views: **Accounts**, **JSON**, and **Validate**.
+Store accounts are edited under **Stores** → select the store → **Information → Accounting**, which has the views **Accounts**, **JSON**, and **Validate** — plus **VAT rates** when tax groups are enabled, where you give the store its own [VAT rates](ledger-tax-groups.md#store-vat-rates). Store accounts can also be read and written as `chartOfAccounts` on the store in the [Store API](../../Stores/store-api.md).
 
 ## How store accounts combine with the tenant chart
 
@@ -58,7 +58,9 @@ The JSON format is the same as for the [tenant chart](ledger-chart-of-accounts.m
 
 ## Validating store accounts
 
-The **Validate** view checks the store's entries merged over the tenant chart, against the tenant's payment methods and tax groups. The number of errors and warnings appears as a badge on the view. A store without entries of its own has nothing to check.
+The **Validate** view checks the store's entries merged over the tenant chart, against the tenant's payment methods and tax groups — and against the store's own VAT rates when it has them. The number of errors and warnings appears as a badge on the view. A store without accounts or VAT rates of its own has nothing to check.
+
+When the store has VAT rates of its own but no accounts, only the checks the VAT rates can change run: the store's own rows, and — when tax groups are enabled — an account for each of the store's own active codes, matched on the code, on the store's rate, or by a catch-all entry.
 
 Besides the chart, payment-method, and tax-group checks described in [Configuration](ledger-config.md#validation), store validation reports:
 
@@ -70,8 +72,9 @@ Besides the chart, payment-method, and tax-group checks described in [Configurat
 | References a tax group the tenant does not have | Warning | The entry's tax group code is not in the tenant's VAT rates. |
 | Accounts carry custom properties | Warning | Entries have custom properties. |
 | Chart size | Warning / Error | The store's entries exceed 128 KB (warning) or 512 KB (error). |
+| Store VAT rates | Error | One of the store's own VAT rates breaks a rule that the save checks when the rates change — see [Saving a store with its own VAT rates](ledger-tax-groups.md#saving-a-store-with-its-own-vat-rates). Shown in the area `StoreTaxGroups`. |
 
-When you save a store that has entries of its own, the check runs again. If it finds errors or warnings, a **Check the chart of accounts before saving** dialog lists them; select **Save anyway** to save or **Abort** to go back. The check never blocks the save on its own.
+When you save a store that has accounts or VAT rates of its own, the check runs again. If it finds errors or warnings, a **Check the chart of accounts before saving** dialog lists them; select **Save anyway** to save or **Abort** to go back. The check never blocks the save on its own, but the save itself refuses changed store VAT rates that break a rule.
 
 ## Store accounting fields
 

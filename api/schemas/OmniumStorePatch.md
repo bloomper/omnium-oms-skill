@@ -55,6 +55,8 @@ Physical store, Web shop, Warehouse, or other department of the company
 - `accountingDimensionCode`: string, nullable — Store dimension/account code emitted on accounting postings (e.g. inter-store cost-transfer lines). Falls back to the store id when not set.
 - `stockBuffer`: number (decimal), nullable — Stock buffer quantity subtracted from available inventory for this store. Null leaves the existing value unchanged (use OmniumStore PUT to clear back to market/global fallback).
 - `omniStockRules`: [`OmniumOmniStockRules`](OmniumOmniStockRules.md)
+- `chartOfAccounts`: List<[`OmniumChartOfAccountEntry`](OmniumChartOfAccountEntry.md)>, nullable — The store's own accounts. Null leaves them unchanged; a value replaces the whole list, and an empty list removes them.
+- `taxGroups`: List<[`OmniumTaxGroup`](OmniumTaxGroup.md)>, nullable — The store's own VAT rates. The codes must exist in the tenant VAT rates. Null leaves them unchanged; a value replaces the whole list, and an empty list removes them.
 
 **Used directly by endpoints in:**
 

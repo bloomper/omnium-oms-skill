@@ -21,6 +21,7 @@ Operation ID: `InsightsGetOrders`
 
 - 200: List<[`OmniumInsightsOrderDailyResponse`](../schemas/OmniumInsightsOrderDailyResponse.md)> — Success
 - 400: string — Bad Request
+- 503: string — Server Error
 
 ---
 
@@ -36,6 +37,7 @@ Operation ID: `InsightsGetProducts`
 
 - 200: List<[`OmniumInsightsProductDailyResponse`](../schemas/OmniumInsightsProductDailyResponse.md)> — Success
 - 400: string — Bad Request
+- 503: string — Server Error
 
 ---
 
@@ -51,6 +53,7 @@ Operation ID: `InsightsGetProjectsActivity`
 
 - 200: List<[`OmniumInsightsProjectActivityDailyResponse`](../schemas/OmniumInsightsProjectActivityDailyResponse.md)> — Success
 - 400: string — Bad Request
+- 503: string — Server Error
 
 ---
 
@@ -66,6 +69,7 @@ Operation ID: `InsightsGetProjectsInProgress`
 
 - 200: List<[`OmniumInsightsProjectInProgressResponse`](../schemas/OmniumInsightsProjectInProgressResponse.md)> — Success
 - 400: string — Bad Request
+- 503: string — Server Error
 
 ---
 
@@ -81,6 +85,7 @@ Operation ID: `InsightsGetLoyaltyOrders`
 
 - 200: List<[`OmniumInsightsLoyaltyOrderDailyResponse`](../schemas/OmniumInsightsLoyaltyOrderDailyResponse.md)> — Success
 - 400: string — Bad Request
+- 503: string — Server Error
 
 ---
 
@@ -96,6 +101,7 @@ Operation ID: `InsightsGetLoyaltyMembers`
 
 - 200: List<[`OmniumInsightsLoyaltyMemberDailyResponse`](../schemas/OmniumInsightsLoyaltyMemberDailyResponse.md)> — Success
 - 400: string — Bad Request
+- 503: string — Server Error
 
 ---
 
@@ -111,6 +117,7 @@ Operation ID: `InsightsGetReturns`
 
 - 200: List<[`OmniumInsightsReturnDailyResponse`](../schemas/OmniumInsightsReturnDailyResponse.md)> — Success
 - 400: string — Bad Request
+- 503: string — Server Error
 
 ---
 
@@ -126,3 +133,4 @@ Operation ID: `InsightsGetPromotions`
 
 - 200: List<[`OmniumInsightsPromotionDailyResponse`](../schemas/OmniumInsightsPromotionDailyResponse.md)> — Success
 - 400: string — Bad Request
+- 503: string — Server Error

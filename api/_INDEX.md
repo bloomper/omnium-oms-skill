@@ -146,7 +146,7 @@ Key schemas: [`OmniumFileDownloadRequest`](schemas/OmniumFileDownloadRequest.md)
 | [`endpoints/carts/checkout.md`](endpoints/carts/checkout.md) | Carts \| Checkout | 21 | Contains endpoints for the cart checkout process. Adding payment, customer, discounts, validating cart etc. |
 | [`endpoints/carts/get.md`](endpoints/carts/get.md) | Carts \| Get | 3 | Contains endpoints for getting items to carts. |
 | [`endpoints/carts/line-items.md`](endpoints/carts/line-items.md) | Carts \| Line Items | 5 | Contains endpoints for updating cart orderLines. Carts are orders that are not yet confirmed by customer. Inherits order model, but has additional properties. |
-| [`endpoints/carts/other.md`](endpoints/carts/other.md) | Carts \| Other | 3 | Various endpoints for carts. |
+| [`endpoints/carts/other.md`](endpoints/carts/other.md) | Carts \| Other | 4 | Various endpoints for carts. |
 | [`endpoints/carts/search.md`](endpoints/carts/search.md) | Carts \| Search | 3 | Contains endpoints for searching for carts with different parameters. Carts are orders that are not yet confirmed by customer. Inherits order model, but has additional properties. |
 | [`endpoints/carts/templates.md`](endpoints/carts/templates.md) | Carts \| Templates | 5 | Various endpoints for carts. Cart templates are typically used as an easy way to create multiple offers to customers in a B2B context, but can be used in other scenarios as well. |
 | [`endpoints/carts/update.md`](endpoints/carts/update.md) | Carts \| Update | 8 | Contains endpoints for creating and modifying carts. Carts are orders that are not yet confirmed by customer. Inherits order model, but has additional properties. |
@@ -256,7 +256,7 @@ Key schemas: [`OmniumProject`](schemas/OmniumProject.md), [`OmniumComment`](sche
 | [`endpoints/orders/gift-cards.md`](endpoints/orders/gift-cards.md) | Orders \| Gift Cards | 4 | Gift cards |
 | [`endpoints/orders/invoices.md`](endpoints/orders/invoices.md) | Orders \| Invoices | 1 | Invoices |
 | [`endpoints/orders/order-lines.md`](endpoints/orders/order-lines.md) | Orders \| Order Lines | 6 | Order lines. |
-| [`endpoints/orders/others.md`](endpoints/orders/others.md) | Orders \| Others | 9 | Various endpoints for order management. |
+| [`endpoints/orders/others.md`](endpoints/orders/others.md) | Orders \| Others | 10 | Various endpoints for order management. |
 | [`endpoints/orders/payments.md`](endpoints/orders/payments.md) | Orders \| Payments | 7 | Payments |
 | [`endpoints/orders/pick-lists.md`](endpoints/orders/pick-lists.md) | Orders \| Pick Lists | 3 | Pick lists for warehouse movements. |
 | [`endpoints/orders/returns.md`](endpoints/orders/returns.md) | Orders \| Returns | 6 | Return processing. |
@@ -287,7 +287,7 @@ Key schemas: [`GenerateSAFTReportRequest`](schemas/GenerateSAFTReportRequest.md)
 | [`endpoints/products/categories.md`](endpoints/products/categories.md) | Products \| Categories | 14 | Product category information. |
 | [`endpoints/products/cost-prices.md`](endpoints/products/cost-prices.md) | Products \| Cost Prices | 3 | Product cost prices. |
 | [`endpoints/products/get.md`](endpoints/products/get.md) | Products \| Get | 9 | Get products by parameters. |
-| [`endpoints/products/inventory.md`](endpoints/products/inventory.md) | Products \| Inventory | 21 | Fetch and update inventory. |
+| [`endpoints/products/inventory.md`](endpoints/products/inventory.md) | Products \| Inventory | 22 | Fetch and update inventory. |
 | [`endpoints/products/price-list-items.md`](endpoints/products/price-list-items.md) | Products \| Price List Items | 7 | Product price list items. |
 | [`endpoints/products/price-lists.md`](endpoints/products/price-lists.md) | Products \| Price Lists | 7 | Product price list information. |
 | [`endpoints/products/prices.md`](endpoints/products/prices.md) | Products \| Prices | 4 | Fetch and update product prices. |
@@ -305,7 +305,7 @@ Key schemas: [`OmniumProduct`](schemas/OmniumProduct.md), [`OmniumPriceList`](sc
 
 | File | Tag | Endpoints | Description |
 |------|-----|-----------|-------------|
-| [`endpoints/projects.md`](endpoints/projects.md) | Projects | 31 | Projects |
+| [`endpoints/projects.md`](endpoints/projects.md) | Projects | 32 | Projects |
 | [`endpoints/projects/assets.md`](endpoints/projects/assets.md) | Projects \| Assets | 6 | Project assets |
 | [`endpoints/projects/change-orders.md`](endpoints/projects/change-orders.md) | Projects \| Change orders | 6 | Project change orders |
 | [`endpoints/projects/logs.md`](endpoints/projects/logs.md) | Projects \| Logs | 4 | Project logs |
@@ -360,17 +360,17 @@ Key schemas: [`OmniumEventSubscription`](schemas/OmniumEventSubscription.md), [`
 
 | File | Tag | Endpoints | Description |
 |------|-----|-----------|-------------|
-| [`endpoints/stores.md`](endpoints/stores.md) | Stores | 12 | Warehouses, stores, and other sales channels. |
+| [`endpoints/stores.md`](endpoints/stores.md) | Stores | 13 | Warehouses, stores, and other sales channels. |
 
-Key schemas: [`OmniumStore`](schemas/OmniumStore.md), [`OmniumStoreOmniumSearchResult`](schemas/OmniumStoreOmniumSearchResult.md), [`OmniumStoreOmniumResult`](schemas/OmniumStoreOmniumResult.md), [`OmniumStorePatch`](schemas/OmniumStorePatch.md), [`OmniumStoreSearchRequest`](schemas/OmniumStoreSearchRequest.md), [`OmniumStoreUpdateResult`](schemas/OmniumStoreUpdateResult.md)
+Key schemas: [`OmniumStore`](schemas/OmniumStore.md), [`OmniumStoreOmniumSearchResult`](schemas/OmniumStoreOmniumSearchResult.md), [`OmniumStoreOmniumResult`](schemas/OmniumStoreOmniumResult.md), [`OmniumStorePatch`](schemas/OmniumStorePatch.md), [`OmniumStoreSearchRequest`](schemas/OmniumStoreSearchRequest.md), [`OmniumStoreUpdateResult`](schemas/OmniumStoreUpdateResult.md), [`OmniumTaxGroup`](schemas/OmniumTaxGroup.md)
 
 ### Suppliers
 
 | File | Tag | Endpoints | Description |
 |------|-----|-----------|-------------|
-| [`endpoints/suppliers.md`](endpoints/suppliers.md) | Suppliers | 6 | Suppliers |
+| [`endpoints/suppliers.md`](endpoints/suppliers.md) | Suppliers | 7 | Suppliers |
 
-Key schemas: [`OmniumSupplier`](schemas/OmniumSupplier.md), [`OmniumSupplierOmniumSearchResult`](schemas/OmniumSupplierOmniumSearchResult.md), [`OmniumSupplierSearchRequest`](schemas/OmniumSupplierSearchRequest.md)
+Key schemas: [`OmniumSupplier`](schemas/OmniumSupplier.md), [`OmniumSupplierOmniumSearchResult`](schemas/OmniumSupplierOmniumSearchResult.md), [`OmniumSupplierPatch`](schemas/OmniumSupplierPatch.md), [`OmniumSupplierSearchRequest`](schemas/OmniumSupplierSearchRequest.md), [`OmniumSupplierUpdateResult`](schemas/OmniumSupplierUpdateResult.md)
 
 ### Tokens
 
@@ -416,5 +416,5 @@ Used by endpoints in 3 or more areas. The full list of schemas is in [`schemas/_
 | [`OmniumEmailMessage`](schemas/OmniumEmailMessage.md) | Customers, Notifications, Projects | Class for sending email |
 | [`OmniumInvoiceOmniumSearchResult`](schemas/OmniumInvoiceOmniumSearchResult.md) | Invoices, Orders, Projects | Generic class for receiving search results with facets |
 | [`OmniumProductSearchRequest`](schemas/OmniumProductSearchRequest.md) | Obsolete, Products, Promotions | Search request object for products |
-| [`ProblemDetails`](schemas/ProblemDetails.md) | Accounting, Carts, Cases, Customers, Obsolete, Orders, Products, Projects, Promotions, Settings, Stores |  |
+| [`ProblemDetails`](schemas/ProblemDetails.md) | Accounting, Carts, Cases, Customers, Insights, Obsolete, Orders, Products, Projects, Promotions, Settings, Stores |  |
 <!-- END generated endpoint files -->

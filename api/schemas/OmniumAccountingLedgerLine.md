@@ -16,6 +16,8 @@ A single line on an accounting posting (one debit/credit entry for one account).
 - `category`: [`OmniumAccountCategory`](OmniumAccountCategory.md)
 - `debit`: number (decimal) — Debit amount in posting currency.
 - `credit`: number (decimal) — Credit amount in posting currency.
+- `debitInclVat`: number (decimal), nullable — Debit amount including VAT. For accounting systems that take the VAT-inclusive amount on the revenue line and derive the VAT from the VAT code. A revenue line (Sales, RentalSales, Shipping) carries its net amount plus the VAT booked against it, and the OutputVat line that VAT came from reads 0, so the inclusive amounts of a posting balance among themselves. Every other line equals Debit. Null on lines posted before this field existed; regenerate the posting to get it.
+- `creditInclVat`: number (decimal), nullable — Credit amount including VAT. See Omnium.Public.Accounting.Models.OmniumAccountingLedgerLine.DebitInclVat.
 - `currencyCode`: string, nullable — ISO currency code for the amount (e.g. NOK, SEK, EUR).
 - `vatCode`: string, nullable — VAT code (when applicable, on VAT-related lines).
 - `vatRate`: number (decimal), nullable — VAT rate as a percentage (e.g. 25 for 25%).

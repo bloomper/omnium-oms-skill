@@ -10,11 +10,11 @@ SMS client settings allow you to configure one or more SMS providers in Omnium. 
 
 The configuration is located under:
 
-**Configuration → Advanced → Notifications → SMS Client**
+**Configuration → Settings → Communication → SMS client**
 
 ## Adding a provider
 
-Click **Add** to create a new SMS provider entry. Each entry has a type (the SMS gateway) and optional availability filters that control when it is used.
+Click **Add** to create a new SMS provider entry. Each entry has a provider (the SMS gateway) and optional availability filters that control when it is used.
 
 ## Availability filters
 
@@ -41,7 +41,8 @@ When sending an SMS, Omnium resolves the provider in the following priority orde
 
 | Type | Description |
 | --- | --- |
-| `vianett` | ViaNett SMS gateway — also used for [Link Mobility](../plugins/Other/LinkMobility.md) |
+| `linkmobility` | LINK Mobility SMS gateway, with optional two-way replies. See [LINK Mobility](../plugins/Other/LinkMobility.md) |
+| `vianett` | ViaNett SMS gateway, the older LINK Mobility API. Customers cannot reply to SMS sent through it |
 | `sveve` | Sveve SMS gateway |
 | `twilio` | Twilio SMS gateway |
 | `keysms` | Key SMS gateway |
@@ -57,8 +58,10 @@ The available fields depend on the provider type selected. Common fields:
 
 | Field | Description |
 | --- | --- |
-| Type | The SMS gateway provider |
+| Provider | The SMS gateway provider |
 | Username | Account username (if required by the provider) |
-| Password | Account password (if required by the provider) |
-| URL | Gateway endpoint URL (if required by the provider) |
-| Default SMS sender | The sender name or phone number shown to the recipient |
+| Password or API key | Account password or API key (if required by the provider) |
+| API address | Gateway endpoint URL (if required by the provider) |
+| Sender | The sender name or phone number shown to the recipient. Empty means the default SMS sender in General settings |
+
+LINK Mobility has more fields, including the settings for two-way replies. See [LINK Mobility](../plugins/Other/LinkMobility.md).

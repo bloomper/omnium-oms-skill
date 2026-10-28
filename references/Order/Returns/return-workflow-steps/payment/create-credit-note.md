@@ -26,7 +26,8 @@ This step has no configurable properties. Credit note format and numbering follo
 1.  Generates a unique credit note number
 2.  Creates credit note document with return details
 3.  Stores credit note reference on the return order
-4.  May trigger document generation (PDF) depending on configuration
+4.  When the order has receipts, lists the receipts that hold the returned lines in `creditedInvoiceIds`, and the credit note PDF shows them as the receipts it credits
+5.  May trigger document generation (PDF) depending on configuration
 
 ### Prerequisites
 
@@ -66,3 +67,4 @@ This step has no configurable properties. Credit note format and numbering follo
 
 *   [Credit Return](credit-return.md) - Process the actual refund
 *   [Export Payments](export-payments.md) - Sync payment data externally
+*   [Create Receipts](../../../workflow-steps/payment/create-receipts.md) - Issues the receipts a credit note credits

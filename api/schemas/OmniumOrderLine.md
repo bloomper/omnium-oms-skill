@@ -70,6 +70,7 @@ Order line
 - `orderDiscounts`: List<[`OmniumOrderLineOrderDiscount`](OmniumOrderLineOrderDiscount.md)>, nullable — Calculated, read-only - this order line's share of each individual order level discount. The amounts sum to OrderDiscountAmount. Each discount takes the proportion it has of the order form's total discount amount; any rounding residual lands on the last discount, so summing one discount's shares across all lines may differ from its DiscountAmount by cents. Ignored on input, Omnium always recalculates it.
 - `orderLineBonusPoints`: [`OmniumOrderLineBonusPoints`](OmniumOrderLineBonusPoints.md)
 - `expectedDeliveryDate`: string (date-time), nullable — Expected delivery date for order line
+- `expectedDeliveryDateTo`: string (date-time), nullable — End of the expected delivery window for order line, starting at ExpectedDeliveryDate. Leave empty for a single expected delivery date
 - `serialNumber`: string, nullable — Serial number for order line
 - `isSerializableProduct`: boolean, nullable — Indicates whether the product requires a serial number
 - `isRental`: boolean — Indicates whether the order line represents a rental product. Rental dates are stored in Properties (keys: RentalFrom, RentalTo).

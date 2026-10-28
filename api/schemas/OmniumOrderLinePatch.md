@@ -66,6 +66,7 @@ Order line patch
 - `orderLineDiscounts`: List<[`OmniumOrderLineDiscount`](OmniumOrderLineDiscount.md)>, nullable, max length 250 — Discounts valid for this orderline
 - `orderLineBonusPoints`: [`OmniumOrderLineBonusPoints`](OmniumOrderLineBonusPoints.md)
 - `expectedDeliveryDate`: string (date-time), nullable — Expected delivery date for order line
+- `expectedDeliveryDateTo`: string (date-time), nullable — End of the expected delivery window for order line, starting at ExpectedDeliveryDate. Leave empty for a single expected delivery date
 - `serialNumber`: string, nullable — Serial number for order line
 - `isSerializableProduct`: boolean, nullable — Indicates whether the product requires a serial number
 - `packageSkuId`: string, nullable — Package sku ID / Code (used if product is part of package)

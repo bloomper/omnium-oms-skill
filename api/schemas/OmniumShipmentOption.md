@@ -48,6 +48,7 @@ Information about a specific shipment product, provider(Bring, Postnord, HeltHje
 - `shouldParseDescription`: boolean — Used by special magento cases. Ask us if needed
 - `validOnMarkets`: List<string>, nullable, max length 250 — The markets this shipment option is valid for
 - `taxRate`: number (decimal) — Tax rate for the options, if differ from market tax rate. Only in used if we should calculate prices
+- `taxGroupCode`: string, nullable — VAT code (tax group) of the shipping cost. When set and the tenant uses VAT codes, shipping is charged the rate this code has for the order's store instead of TaxRate. Must be one of the tenant's VAT codes.
 - `shippingTax`: number (decimal) — Tax on shipping cost
 - `shippingSubTotalExclTax`: number (decimal) — Shipping cost excl tax
 - `discountedPriceTax`: number (decimal) — Discounted price tax

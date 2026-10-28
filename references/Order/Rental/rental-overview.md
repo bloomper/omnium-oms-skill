@@ -49,7 +49,7 @@ When a rental item is added to a cart, two line items are created:
 | Field | Value |
 | --- | --- |
 | `isRental` | `true` |
-| `quantity` | Number of rental days (`rentalTo − rentalFrom + 1`) |
+| `quantity` | Number of daily rates: one for every started 24 hours of the rental period, and at least one |
 | `placedPrice` | Daily rate from the rental product's price |
 | Property `RentalFrom` | Rental period start (ISO 8601) |
 | Property `RentalTo` | Rental period end (ISO 8601) |
@@ -71,12 +71,13 @@ The deposit line item is linked to the rental line item via the `DepositFor` pro
 
 ## Configuration
 
-Rental is controlled by two settings in **Configuration → Settings → Orders**.
+Rental is controlled by these settings in **Configuration → Settings → Orders**.
 
 | Setting | Type | Description |
 | --- | --- | --- |
 | `isRentalEnabled` | bool | Enables rental features in the Omnium UI |
 | `rentalProjectTypeId` | string | ID of the project type used when creating rental projects from orders. Setting this also enables rental-related UI features. |
+| `rentalReturnBufferMinutes` | int | **Reserve the unit after return (minutes)**. How long a rental instance stays reserved after it is returned, for example for checking and cleaning. No rental can start in this time, and a rental must end this long before the next one starts. Empty or `0` turns it off. See [Reservation after return](rental-api.md#reservation-after-return). |
 
 Rental projects are only created automatically when `rentalProjectTypeId` is set. If you enable `isRentalEnabled` without configuring `rentalProjectTypeId`, rental order lines will be processed but no tracking project will be created.
 

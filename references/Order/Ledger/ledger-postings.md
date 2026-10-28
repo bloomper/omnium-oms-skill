@@ -10,7 +10,7 @@ A **posting** is a voucher: a header plus a set of **ledger lines** whose debits
 
 | Source | When it is built | Scope |
 | --- | --- | --- |
-| `PosZReport` | Inline, when a register's Z-report is closed | One register's settlement: its sales, tender, and cash movements |
+| `PosZReport` | Inline, when a register's Z-report is closed | One register's settlement: its sales, returns, tender, and gift cards. Counted cash, the opening float, and cash movements are not posted. |
 | `WebFulfillment` | A daily batch, per store and accounting day | The web / click & collect payment transactions of that store's orders on that day: captures book the sale, credits book the refund |
 
 A POS posting references the Z-report it was built from (`ZReportId`, `ZReportNumber`) and the register(s) it covers. A web-fulfillment posting covers a single store for a single posting date — and a single order type, when [per-order-type posting](ledger-config.md#posting-settings) is on — and references the contributing orders in `OrderIds`.
@@ -61,7 +61,7 @@ Every ledger line is classified with a category. Categories are how the [Chart o
 | `DepositLiability` | Refundable customer deposit, such as a rental deposit (a liability, not revenue) |
 | `CashFloat` | Opening / closing till float (a balance-sheet asset) |
 | `CashInTransit` | Cash deposited to the bank but not yet cleared |
-| `OverShort` | Cash discrepancy — counted minus expected (suspense) |
+| `OverShort` | Cash discrepancy (suspense). Postings book only [auto-balancing](ledger-postings.md#auto-balancing) residuals here: a Z-report's counted cash is not posted. |
 | `Tip` | Tip-pool liability (in markets that support tips) |
 | `Other` | Anything not covered above |
 
@@ -71,7 +71,7 @@ Posting generation does not currently produce `Discount`, `PaymentProviderFee`, 
 
 Sales and output VAT lines are **split by VAT rate**. If a fulfillment day contains goods at 25% and goods at 15%, the posting carries a separate `Sales` line and a separate `OutputVat` line for each rate; a 0% rate produces a `Sales` line but no `OutputVat` line. On web-fulfillment postings, when [tax groups](ledger-tax-groups.md) are enabled, the split also carries the tax-group code, so the same 0% rate can be distinguished — and booked to different accounts — between, for example, "zero-rated" and "outside VAT scope". `OutputVat` lines also carry the group's external VAT code (MVA-kode) when the order line has it.
 
-POS postings are built from the Z-report, which totals VAT per rate and sales per product group, without tax groups. Each product group's `Sales` line takes the VAT rate of the group's first sale line, so a product group that mixes rates books all its sales under one rate. POS lines carry no tax-group code, and their accounts are [resolved by rate](ledger-chart-of-accounts.md#how-an-account-is-resolved).
+POS postings are built from the Z-report, which totals VAT per rate and sales per product group and rate, without tax groups. A product group that holds items at several rates, such as toys at 25% and sweets at 15%, gets one `Sales` line per rate. POS lines carry no tax-group code, and their accounts are [resolved by rate](ledger-chart-of-accounts.md#how-an-account-is-resolved).
 
 ## Gift cards
 
@@ -87,7 +87,7 @@ This keeps gift-card float off the revenue and cash accounts and isolates it on 
 
 A posting must balance. If the lines leave a residual imbalance larger than the configured [balance tolerance](ledger-config.md#posting-settings), Omnium adds a single balancing line and flags the posting with `AutoBalanced = true`:
 
-*   **POS** postings balance to the **Over/Short** account (`OverShort`) — a genuine till discrepancy belongs there.
+*   **POS** postings balance to the **Over/Short** account (`OverShort`).
 *   **Web fulfillment** postings, where sales exceed tender (the customer still owes money), balance to a **Receivable** account. Where tender exceeds sales, they balance to `OverShort`.
 
 Small imbalances within the tolerance are left as-is. The `Imbalance` field on the posting reports the signed residual (debit minus credit); it should be `0` on a balanced posting. The auto-balancing line also adds a note to the posting's `Warnings`.

@@ -455,6 +455,7 @@ Template settings configure which email and document templates are used for vari
 | --- | --- | --- |
 | DefaultEmailTemplate | string | Reference to the default email template. |
 | CustomerNoteTemplate | string | Template for customer notes and messages. |
+| InvoiceTemplate | string | Template file for the PDF of invoices, credit notes and receipts. Empty means the standard layout. See [Invoice template](markets-config.md#invoice-template). |
 | CartTemplates | List<TemplateReferenceSettings> | Available templates for shopping carts. |
 | OrderTemplates | List<TemplateReferenceSettings> | Available templates for orders. |
 | PurchaseOrderTemplates | List<TemplateReferenceSettings> | Available templates for purchase orders. |
@@ -500,6 +501,68 @@ Template settings configure which email and document templates are used for vari
       "CustomerCommentTemplate": "customer-project-comment",
       "InternalCommentTemplate": "internal-project-comment"
     }
+  }
+}
+```
+
+### Invoice template
+
+`InvoiceTemplate` replaces the standard PDF layout of invoices, credit notes and receipts. It is optional: when no template is set, the PDF uses the standard layout. Set it in the notification template settings, on the tab for a market, a market group or the default for all markets.
+
+#### Which template a document uses
+
+Omnium uses the first template that is set, in this order:
+
+1.  `InvoiceTemplate` on the document's market.
+2.  `InvoiceTemplate` on the market group that the market belongs to (`MarketGroupId`).
+3.  `InvoiceTemplate` in the default template settings for all markets.
+4.  The standard layout.
+
+A document with no market starts at step 3. The same template is used everywhere an invoice PDF is made: the order's Invoices tab, `GET api/Invoices/GetAsPdf/{id}`, the invoice notification and the shipment receipt attachment on order notifications.
+
+When the chosen file is missing, is not a `.json` file or has no `html` content, Omnium uses the standard layout and logs a warning that names the file and the document. A broken template never stops a PDF or an email.
+
+#### The template file
+
+The template is a `.json` file in the tenant's template container, made in the same email designer as the order templates. Omnium uses its `html` content.
+
+Start from the starter invoice template rather than an empty design. It has the standard layout, every placeholder and the styles the generated parts need. Its styles apply only inside its `omnium-invoice` wrapper, so they do not change the designer's own layout. Find it in the demo content of the template file manager, copy it and change it. If your environment does not have it in the demo content yet, contact Omnium.
+
+Omnium fills the template with the same values as the standard layout, so invoices, credit notes and receipts print the same data and only the layout changes. Margins, paper format and custom fonts come from the tenant's PDF settings.
+
+The template must:
+
+*   Hold `{ORDERLINES}` inside a `<table>` with a matching header row. The placeholder becomes table rows. On a receipt each row has an extra VAT rate cell, and `{TAX_RATE_HEADER_HTML}` adds the matching heading.
+*   Define the CSS classes `rightUpperInfo`, `floatRight` and `taxSummary`, which the generated parts use.
+
+A placeholder that the template leaves out is not printed. Text that the template adds is printed as written, in every language.
+
+#### Placeholders
+
+| Group | Placeholders |
+| --- | --- |
+| Document | `{COPY_OF_INVOICE}` (the title: invoice, copy of invoice, credit note or receipt), `{INVOICE_NUMBER}`, `{INVOICE_DATE}`, `{ORDER_NUMBER}`, `{ORDER_DATE}`, `{COMPLETED_DATE_HTML}`, `{IMG_SRC}` (the logo URL), `{COMPANY_NAME}` (the tenant ID, not a legal company name) |
+| Seller, stored on a receipt when it is issued | `{STORE_NAME}`, `{FROM_ADDRESSLINE}`, `{FROM_POSTALCODE}`, `{FROM_CITY}`, `{INVOICE_FOOTER}` |
+| Store, read when the PDF is made | `{STORE_ADDRESS}`, `{STORE_ZIP}`, `{STORE_CITY}`, `{STORE_PHONENUMBER}`, `{STORE_EMAIL}`, `{STORE_WEBADDRESS}`, `{ORGANIZATION_NUMBER}`, `{MVA_REGNR}` |
+| Customer and delivery | `{CUSTOMER_NUMBER}`, `{CUSTOMER_NAME}`, `{CUSTOMER_ADDRESSLINE}`, `{CUSTOMER_POSTALCODE}`, `{CUSTOMER_CITY}`, `{CUSTOMER_ORGANIZATION_NUMBER_HTML}`, `{DELIVERY_ADDRESSLINE}`, `{DELIVERY_POSTALCODE}`, `{DELIVERY_CITY}` |
+| Lines and totals | `{ORDERLINES}`, `{ORDERLINES_SUM}`, `{SHIPMENT_COST}`, `{TAX_BASE}`, `{TAX}`, `{ORDER_TOTAL}` |
+| Parts that depend on the document type | `{PAYMENT_TERMS_HTML}` (due date, KID and bank account on an invoice; the paid line on a receipt), `{RECEIPT_DETAILS_HTML}`, `{PAYMENTS_HTML}`, `{TAX_RATE_HEADER_HTML}`, `{TAX_SUMMARY_HTML}`, `{CREDITED_DOCUMENTS_HTML}` |
+| Labels in the market's language | `{INVOICE_NUMBER_LABEL}`, `{INVOICE_DATE_LABEL}`, `{ORDER_NUMBER_LABEL}`, `{ORDER_DATE_LABEL}`, `{FROM_LABEL}`, `{CUSTOMER_LABEL}`, `{DELIVERY_ADDRESS}`, `{ORDER_DETAILS}`, `{SKU}`, `{PRODUCT_NAME}`, `{UNIT_PRICE}`, `{DISCOUNT}`, `{QUANTITY}`, `{UNIT}`, `{TOTAL_AMOUNT}`, `{SUBTOTAL_LABEL}`, `{TAX_TOTAL_LABEL}`, `{SHIPMENT_COST_LABEL}`, `{TOTAL_LABEL}` |
+
+On an invoice, the receipt parts print nothing. On a receipt, the payment terms become the paid line, and the payments and the VAT summary per rate appear.
+
+#### Things to know
+
+*   An invoice or a receipt is an accounting document. Keep the content the law requires: the number, the date, the seller with organization number and VAT registration, the lines, the VAT per rate and the totals. The starter template has all of it. Omnium does not check a custom template.
+*   Put the legal seller details of a receipt in the stored seller placeholders and in the document footer, `{INVOICE_FOOTER}`. The store placeholders show the store as it is when the PDF is made, so they can differ from the store as it was when the receipt was issued.
+*   A document is always rendered with the template that applies at that moment. A new template therefore also changes how documents issued earlier look when you download them again. The numbers, lines and payments on a receipt and its stored seller placeholders stay the same. The logo and the store placeholders show the current values.
+*   The designer is made for email. A long list of lines breaks across pages where the browser decides, and no header repeats on each page.
+*   Change the file through Omnium. A file changed directly in blob storage can stay cached for up to 24 hours.
+
+```json
+{
+  "TemplateSettings": {
+    "InvoiceTemplate": "faktura-nor.json"
   }
 }
 ```

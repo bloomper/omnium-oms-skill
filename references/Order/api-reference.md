@@ -396,6 +396,36 @@ GET /api/Orders/Customers/CUST-001/Orders?page=1&pageSize=10
 
 * * *
 
+### Get orders with reserved inventory
+
+Get the orders that reserve inventory for a SKU in a warehouse, for example to see which orders make up the reserved quantity on an inventory item.
+
+**Endpoint:** `GET /api/Orders/WithReservedInventory`
+
+**Parameters:**
+
+| Parameter | Type | Location | Required | Default | Description |
+| --- | --- | --- | --- | --- | --- |
+| `skuId` | string | query | Yes | \- | SKU (variant code) |
+| `warehouseCode` | string | query | Yes | \- | Warehouse code. For a virtual warehouse, orders are matched on the virtual warehouse and its first physical warehouse |
+| `page` | int | query | No | 1 | Page number |
+| `pageSize` | int | query | No | 20 | Results per page (max 100) |
+| `includeAll` | bool | query | No | false | Also return orders that no longer reserve warehouse stock |
+
+By default, only orders that currently reserve stock are returned: orders created within the last two years whose order line for the SKU is not fully canceled, not fully delivered, not reserved against a purchase order, and not awaiting a purchase order. Partially delivered orders are included, as they still reserve the undelivered remainder. This filtering covers at most the 1,000 newest matching orders, so `totalHits` is at most 1,000 unless `includeAll` is `true`. Orders in a delivered status, or in a status excluded from reserved inventory (`IsExcludedFromReservedInventory` on the [order status](order-config.md#order-status-model)), are never returned.
+
+Each returned order gets these entries in its `properties` list, with the value `true`, when they apply to its order line for the SKU: `hasCancelledLines`, `isDelivered`, `isPartiallyDelivered`, `hasReservationsOnPurchaseOrder`, and `isAwaitingPurchaseOrder`. Orders are sorted by creation date, newest first.
+
+**Example request:**
+
+```
+GET /api/Orders/WithReservedInventory?skuId=10042-BLK-M&warehouseCode=WH-OSLO&pageSize=50
+```
+
+**Response:** `200 OK` with a paginated search result, in the same shape as [Get orders](api-reference.md#get-orders-paginated-list). `400 Bad Request` when `skuId` or `warehouseCode` is missing, `page` or `pageSize` is below 1, `pageSize` is above 100, or `page` × `pageSize` reaches 20,000.
+
+* * *
+
 ## Search orders
 
 ### Search

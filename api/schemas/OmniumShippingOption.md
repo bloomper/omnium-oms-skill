@@ -10,6 +10,7 @@ Shipping option to use on cart / order
 - `description`: string, nullable — Short description about the shipping option
 - `deliveryTime`: string, nullable — Shipping provider, approx. delivery time
 - `taxRate`: number (decimal) — Tax rate
+- `taxGroupCode`: string, nullable — VAT code of the shipping cost, when the shipping method has one. TaxRate is the rate of this code for the cart's store.
 - `shippingTax`: number (decimal) — Shipment cost tax, before any discounts
 - `shippingSubTotal`: number (decimal) — Shipping cost before any discounts
 - `shippingSubTotalExclTax`: number (decimal) — Shipping cost before any discounts, excl tax

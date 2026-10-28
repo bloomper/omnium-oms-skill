@@ -35,6 +35,9 @@ Request for adding a promotion
 - `isBonusPointsReward`: boolean — Is reward given in bonus points instead of discount (CustomerClub and CategoryOrBrand promotions only).
 - `orderTypes`: List<string>, nullable, max length 250 — Promotion is valid only for these order types (e.g. online, clickAndCollect, pos).
 - `tags`: List<string>, nullable, max length 250 — Tag for filtering promotions. E.g. "BlackFriday"
+- `canNotBeCombinedWithTags`: List<string>, nullable, max length 250 — The promotion is not applied to an order line that already has a discount from a promotion with one of these tags.
+- `canOnlyBeCombinedWithTags`: List<string>, nullable, max length 250 — When the order line already has discounts, the promotion is applied only if each of them comes from a promotion with one of these tags. An order line without discounts is not affected by this rule.
+- `requireCombinationWithTags`: boolean — Order line promotions other than price list promotions; ignored for the other types. Makes canOnlyBeCombinedWithTags strict: the promotion is applied only to an order line that already has a discount from a promotion with one of those tags, and only if every discount on the line comes from a promotion with one of them. Has no effect without canOnlyBeCombinedWithTags. A promotion with this set generates no product prices.
 - `properties`: List<[`OmniumPropertyItem`](OmniumPropertyItem.md)>, nullable, max length 250 — Additional properties / meta data
 - `priceFilterMode`: string, nullable — Controls how the promotion filters products based on price type: None (default, no filtering), Exclude, or Include.
 - `priceTypeFilter`: string, nullable — Comma-separated flags indicating which price types to filter: Discounted, MemberPrice, or both (Discounted, MemberPrice). Used with PriceFilterMode.

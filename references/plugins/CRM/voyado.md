@@ -16,7 +16,7 @@ Source: https://docs.omnium.no/docs/plugins/CRM/voyado
 *   Loyalty and CRM over webhooks
     *   Bonus point balance
     *   Reward vouchers (import and redeem-at-capture)
-    *   Personal offers / promotions (coming)
+    *   Personal offers / promotions
 *   Promotions/Personal offers
 
 * * *
@@ -533,13 +533,13 @@ Full example with connector prefix `"BikeShop"` and market specific stores in Vo
 
 Omnium receives real-time events from Voyado over webhooks and reacts instantly, without polling. All events arrive on one endpoint, every request is verified with a signing secret, and the payload can additionally be encrypted.
 
-| Event | Status | Purpose |
-| --- | --- | --- |
-| Bonus points | Available | Keep the bonus point balance in sync |
-| Vouchers | Available | Import reward vouchers and redeem them at capture |
-| Promotions | Coming | Import personal offers assigned to a contact |
+| Event | Purpose |
+| --- | --- |
+| [Bonus points](voyado.md#bonus-points) | Keep the bonus point balance in sync |
+| [Vouchers](voyado.md#vouchers) | Import reward vouchers and redeem them at capture |
+| [Promotions](voyado.md#promotions-personal-offers) | Import personal offers assigned to a contact |
 
-The SFTP voucher import is [legacy](voyado.md#vouchers-over-sftp-legacy); use the webhook for new setups. Promotion assignments are imported over [SFTP](voyado.md#over-sftp-current) until the promotion webhook ships.
+Use the webhooks for new setups. Each event is described in its feature's section below.
 
 ## Initial configuration
 
@@ -548,7 +548,7 @@ One Voyado endpoint carries every event. Set it up once per Voyado connector, th
 1.  **Ask Voyado to activate the events.** Voyado activates webhooks per account and per event. Contact Voyado Solution & Delivery if you are new to webhooks, or Voyado Support to add further events to an existing setup. Events are not delivered until Voyado enables them server-side, even after you have subscribed to the event.
 2.  **Add the endpoint** in Voyado's webhooks dashboard: choose **Add Endpoint**, set the **Endpoint URL** to `https://{your-omnium-api-domain}/api/VoyadoWebhook`, subscribe to the events you use, and save it. Then open the endpoint, go to **Advanced**, and add a header with key `omniumtenantid` and value set to your Omnium tenant id.
 3.  **Copy the signing secret** shown on the endpoint in Voyado into the Voyado connector in Omnium, **Connection** tab, **Webhooks** panel, field **Webhook signing secret**. See [Signing secret](voyado.md#signing-secret).
-4.  **Enable the events** on the connector's **Loyalty** tab. Each event's setting is named in its section below.
+4.  **Enable the events** on the connector's **Loyalty** tab. Each event's setting is named in its feature's section below.
 
 Omnium resolves the connector by matching the payload `tenant` to the connector host subdomain (for example `omnium` from `https://omnium.voyado.com`). If an account's URL differs from the tenant Voyado sends, set a `VoyadoTenantName` property on the connector to that value.
 
@@ -571,17 +571,31 @@ To enable it:
 1.  Ask Voyado to enable payload encryption for the tenant. Voyado provides the encryption key.
 2.  Paste the key into the Voyado connector, **Connection** tab, **Webhooks** panel, field **Webhook encryption key**.
 
-## Bonus points
+* * *
+
+# Bonus points
 
 **Event** `point.balance.updated` · **Setting** Loyalty → **Sync bonus points (webhook)**
 
-Sent whenever the balance changes. The balance is a full snapshot that replaces the stored value and shows on the customer card.
+Bonus point balance updates are received over a webhook. The event is sent whenever the balance changes. The balance is a full snapshot that replaces the stored value and shows on the customer card.
 
-## Vouchers
+* * *
+
+# Vouchers
+
+Voyado converts accumulated bonus points into reward vouchers (bonus checks). In Omnium they are called vouchers. They are imported over the [webhook](voyado.md#import-over-webhook) (recommended) or [SFTP](voyado.md#import-over-sftp).
+
+## Setup
+
+1.  Set **Vouchers** to **Webhook** or **SFTP** on the connector's **Loyalty** tab, and complete the setup for that import below.
+2.  Add the payment type **Voucher** in Omnium settings. The only thing that needs to be set in the payment type settings is Vue-template = `voucher-payment`.
+3.  Set up the scheduled task `VoucherExpirationScheduledTask` to enforce the expiration dates on vouchers. It is sufficient for this task to run once a day. Only vouchers with status **Available** are affected by this task, so vouchers that are applied before the expiration date can still be captured after it.
+
+## Import over webhook
 
 **Event** `reward.voucher.created` · **Setting** Loyalty → **Vouchers** set to **Webhook**
 
-Voyado converts accumulated bonus points into reward vouchers (bonus checks). Omnium imports each one and can redeem it back in Voyado. The payload carries the Voyado voucher id, which the [SFTP export](voyado.md#vouchers-over-sftp-legacy) lacks; without it a voucher cannot be redeemed through Voyado's API.
+Requires the [webhook setup](voyado.md#initial-configuration), including the signing secret. The payload carries the Voyado voucher id, which the SFTP export lacks; without it a voucher cannot be redeemed or reactivated through Voyado's API.
 
 ### How it works
 
@@ -591,13 +605,36 @@ Voyado converts accumulated bonus points into reward vouchers (bonus checks). Om
 4.  On capture, Omnium marks it **Redeemed** and redeems it in Voyado (reward-voucher API v3). Non-blocking: capture succeeds even if Voyado is down.
 5.  On credit or cancel, Omnium frees the voucher and reactivates it in Voyado.
 
-> **Redemption is Omnium-only.** A webhook voucher can only be redeemed through Omnium (including Omnium POS), not from an external POS.
+## Import over SFTP
 
-Vouchers also require the **Voucher** payment type (Vue-template `voucher-payment`) and the daily `VoucherExpirationScheduledTask` to enforce expiry.
+The SFTP voucher export does not include the Voyado voucher id, so vouchers imported this way cannot be redeemed or reactivated through Voyado's API. Omnium marks them redeemed in Voyado when the receipt is exported to Voyado.
 
-## Promotions (coming)
+### Setup
 
-Not yet available in the connector settings. The webhook event `promotion.multiChannel.assigned` will replace the [SFTP assignment import](voyado.md#over-sftp-current) for personal offers. Everything else in the [Promotions](voyado.md#promotions-personal-offers) setup (promotion in Omnium, workflow steps, redemption) stays the same.
+1.  Set **Vouchers** to **SFTP** on the connector's **Loyalty** tab.
+2.  Set up the **FTP Connection** on the **Connection** tab.
+3.  Set the DefaultCurrency-setting under Voyado order settings. This will determine the currency on imported vouchers and should be the same as the group currency in Voyado.
+4.  In Voyado the Voucher export file must be configured to contain contactId, this is required to connect the voucher to the correct customer in Omnium.
+
+### How it works
+
+1.  Voyado generates vouchers from accumulated bonus points.
+2.  Omnium has a scheduled task that retrieves both new and redeemed vouchers from Voyado.
+    *   New vouchers from the import are created in Omnium and assigned to the private customer connected to the Voyado contact that was assigned the voucher.
+    *   If this customer does not already exist in Omnium, Omnium will try to create it by fetching data from Voyado.
+    *   Vouchers redeemed in Voyado will be redeemed in Omnium as well, in case a voucher is redeemed through another channel.
+3.  The vouchers should now be available to inspect from either the private customer cart in Omnium or retrieved using the Omnium voucher-api.
+4.  In order to use a voucher in Omnium, apply it to a cart. This can be done through the UI under payments -> voucher or through the api-endpoint `api/cart/{cartId}/ApplyVoucher/{voucherId}`
+5.  This will add the voucher as an authorized payment on the order as well as updating the voucher status to Applied (thus preventing multiple uses of the same voucher in Omnium).
+6.  When completing an order, the capture payment workflow step will set the voucher payment to “captured” and update the voucher status to “Redeemed”
+7.  The voucher in Voyado will be marked redeemed once the receipt is exported to Voyado. This happens on the workflow step “Export Order” that is usually executed on the last order status.
+
+## Vouchers redeemed outside Omnium
+
+The webhook does not send redemptions. A voucher redeemed outside Omnium, for example in an external POS or manually in Voyado, stays **Available** in Omnium and can be applied to a cart again. Omnium does not check the voucher in Voyado before it is applied.
+
+*   If all vouchers are redeemed through Omnium (including Omnium POS), use the webhook.
+*   If vouchers are also redeemed in other channels, a system that applies vouchers through the Omnium API must check the voucher in Voyado first. Alternatively, use the [SFTP import](voyado.md#import-over-sftp), which also imports vouchers redeemed in other channels, but cannot redeem or reactivate vouchers through Voyado's API.
 
 * * *
 
@@ -623,19 +660,25 @@ Voyado assigns personal offers to contacts. Omnium redeems the coupon in Voyado 
 
 1.  Voyado assigns the promotion to a contact. The import stores the coupon on the customer in Omnium, creating the customer from the Voyado contact if needed (matched on `CustomerUniqueIdentifier`).
 2.  The coupon code is applied to the cart (`CartAddCouponCodeToCart` or the cart UI). Omnium only accepts it if the customer holds that coupon.
-3.  When the order is placed, the workflow checks the coupon against Voyado and redeems it (`/api/v2/promotions/codes/{promotionId}/redeem`).
+3.  When the order is placed, the workflow checks the coupon against Voyado and redeems it (`/api/v3/promotion-assignments/{assignmentId}/redeem`).
 
 ## Assignment import
 
-### Over SFTP (current)
+### Over webhook
+
+**Event** `promotion.multiChannel.assigned` · **Setting** Loyalty → **Promotions** set to **Webhook**
+
+Recommended. Omnium imports each promotion assigned to a contact as a personal coupon on the customer, as soon as Voyado assigns it. Requires the [webhook setup](voyado.md#initial-configuration), including the signing secret.
+
+### Over SFTP
 
 Set **Promotions** to **SFTP** on the connector's **Loyalty** tab and fill in the **FTP Connection** (Host, Username, Password) on the **Connection** tab. The setting also adds the scheduled task **Voyado - Coupon Synchronization** (`VoyadoPromotionSyncScheduledTask`, every 5 minutes) to the tenant, and removes it again when set to **Off**, so the task does not need to be set up separately.
 
 The task reads `/couponExport/` on Voyado's SFTP server and handles **Assigned**, **Redeemed** (in another channel, e.g. POS) and **Deleted** coupons. Failed files are moved to `/couponExport/failed/`. Coupons are therefore not available in Omnium immediately after assignment.
 
-### Over webhook (coming)
+## Coupons redeemed outside Omnium
 
-Not yet available. See [Webhooks: Promotions](voyado.md#promotions-coming). It replaces only this import; the rest of the setup is unchanged.
+The webhook does not send redemptions or deletions. A coupon redeemed outside Omnium, for example in an external POS, stays on the customer in Omnium. It cannot be used twice: the `CheckPersonalDiscountCoupons` workflow step checks the coupon in Voyado when the order is placed, and stops the order if the coupon is already redeemed.
 
 ## Troubleshooting
 
@@ -646,45 +689,7 @@ Not yet available. See [Webhooks: Promotions](voyado.md#promotions-coming). It r
 | `PromotionNotAssociatedWithContact` | The coupon isn't assigned to this customer |
 | `PromotionNotValidForRedemptionChannel` | The coupon isn't valid for the ECOM channel |
 
-Coupons not showing up: check `/couponExport/failed/`, the SFTP connection and that **Promotions** is set to **SFTP**.
-
-* * *
-
-# Vouchers over SFTP (Legacy)
-
-> **Legacy.** New setups should use the [Voucher webhook](voyado.md#vouchers). The SFTP voucher export does not include the Voyado voucher id, so vouchers imported this way cannot be redeemed or reactivated through Voyado's API; Omnium only marks them redeemed when the receipt is exported to Voyado.
-
-Voyado can be used to accumulate bonus points from purchases and convert these point to bonus checks. The Omnium-Voyado integration supports import and redemption of bonus checks generated and assigned in Voyado when placing orders in Omnium. In Omnium the corresponding concept is called Vouchers.
-
-## How it works
-
-1.  Voyado generates vouchers from accumulated bonus points.
-2.  Omnium has a scheduled task that retrieves both new and redeemed vouchers from Voyado.
-    *   New Vouchers from the import are created in Voyado and assigned to the private customer connected to the voyado contact that was assigned the voucher.
-    *   If this customer does not already exist in Omnium, Omnium will try to create it by fetching data from Voyado.
-    *   Vouchers redeemed in Voyado will be redeemed in Omnium as well, in case a voucher is redeemed through another channel.
-3.  The vouchers should now be available to inspect from either the private customer cart in Omnium or retrieved using the Omnium voucher-api.
-4.  In order to use a voucher in Omnium, apply it to a cart. This can be done through the UI under payments -> voucher or through the api-endpoint `api/cart/{cartId}/ApplyVoucher/{voucherId}`
-5.  This will add the voucher as an authorized payment on the order as well as updating the voucher status to Applied (thus preventing multiple uses of the same voucher in Omnium).
-6.  When completing an order, the capture payment workflow step will set the voucher payment to “captured” and update the voucher status to “Redeemed”
-7.  The voucher in Voyado will be marked redeemed once the receipt is exported to Voyado. This happens on the workflow step “Export Order” that is usually executed on the last order status.
-
-## Setup
-
-1.  Set **Vouchers** to **SFTP** on the connector's **Loyalty** tab.
-2.  Set up the **FTP Connection** on the **Connection** tab.
-3.  Set the DefaultCurrency-setting under Voyado order settings. This will determine the currency on imported vouchers and should be the same as the group currency in Voyado.
-4.  In Voyado the Voucher export file must be configured to contain contactId, this is required to connect the voucher to the correct customer in Omnium.
-5.  Add the paymenttype “Voucher” in Omnium settings. The only thing that needs to be set in the payment type settings is Vue-template = “voucher-payment”
-6.  Setup scheduled task VoucherExpirationScheduledTask in order to enforce the expiration dates on vouchers. It is sufficient for this task to run once a day. Only vouchers with status “Available” will be affected by this task. This means that all vouchers that are applied before the expiration date can still be captured after the expiration date.
-
-> The webhook-based [Voucher integration](voyado.md#vouchers) supersedes this SFTP export and provides the voucher id that Omnium needs to redeem and reactivate vouchers through Voyado's API.
-
-* * *
-
-# Bonus Points Sync
-
-Bonus point balance updates are received over a webhook. See [Webhooks: Bonus points](voyado.md#bonus-points) for the setup, event, and endpoint.
+Coupons not showing up: with **Webhook**, check that the endpoint in Voyado subscribes to `promotion.multiChannel.assigned` and that the signing secret on the connector is set. With **SFTP**, check `/couponExport/failed/` and the SFTP connection.
 
 * * *
 

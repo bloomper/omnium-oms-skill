@@ -114,7 +114,19 @@ Operation ID: `CartAddItemToCart`
 
 Operation ID: `CartAddItemsToCart`
 
-**Request body:** [`OmniumCartUpdateRequest`](../../schemas/OmniumCartUpdateRequest.md)
+**Required**
+- `lineItemRequests`: at least one line, otherwise the request is rejected with 400.
+- `lineItemRequests[].skuId`: SKU of the product to add on every line, otherwise the request is rejected with 400.
+
+**Optional**
+- `cartId`: existing cart. If empty, a new cart is created (201). If set, the cart must exist (404 otherwise).
+- `marketId`, `storeId`, `customerId`: used for a new cart. On an existing cart they are applied only when set, and `customerId` only when the cart has no customer.
+- `priceStoreId`: applies to all lines unless a line sets its own.
+- `allowNoPriceItems`: defaults to false. Allows items without a price (they get price = 0). Applies to all lines unless a line sets its own `allowNoPriceItems`. A value on a line (true or false) overrides the request value for that line only. A line that leaves it out uses the request value.
+- `lineItemRequests[].quantity`: defaults to 1. If `unitId` is set, the quantity refers to the unit.
+- `lineItemRequests[].unitId`, `priceStoreId`, `forceNewOrderLine`, `allowNoPriceItems`, `properties`.
+
+**Request body:** [`OmniumCartUpdateRequest`](../../schemas/OmniumCartUpdateRequest.md) — CartId (existing cart - a new cart is created if empty), MarketId, StoreId and CustomerId (used for a new cart), PriceStoreId and AllowNoPriceItems (apply to all lines unless set on the line) and LineItemRequests (SkuId, Quantity, UnitId, PriceStoreId, ForceNewOrderLine, AllowNoPriceItems, Properties). LineItemRequests is required.
 
 **Responses:**
 

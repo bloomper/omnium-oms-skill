@@ -85,6 +85,20 @@ Configure individual shipping options for each delivery method:
 | **Shipment Product** | Service ID from nShift |
 | **Shipment Return Product** | Service ID for return bookings |
 
+### Show the order number on the shipping label
+
+On a direct booking, Omnium sends the order number to nShift as `orderNo` and `receiverReference`. The sender reference (`senderReference`) is the contents of the first parcel: the shipment's goods description, or the product names when **Add Product Names To Label** is enabled. On a prepareId booking, the references and parcel contents come from the prepared shipment. Some carrier label layouts, such as DHL's, print the sender reference as the visible reference on the label.
+
+To send the order number as the sender reference instead, add this property:
+
+| Property Key | Value | Description |
+| --- | --- | --- |
+| `UseOrderNumberAsSenderReference` | `true` | Set it on a shipment option to apply it to that option only, or on the shipping provider to apply it to all its shipment options |
+
+The setting is on when either the shipment option or the shipping provider has it set to `true`. Setting it to `false` on a shipment option does not turn it off when the provider has it set to `true`.
+
+The setting applies to direct bookings, prepareId bookings, and return bookings, and it changes only the sender reference. If the order has no order number, the sender reference is left as it would be without the setting.
+
 * * *
 
 ## Store Configuration

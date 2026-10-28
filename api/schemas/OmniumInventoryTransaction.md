@@ -24,6 +24,7 @@ Represents an inventory transaction in the public API
 - `userId`: string, nullable — User ID who performed the transaction
 - `userName`: string, nullable — User name who performed the transaction
 - `reason`: string, nullable — Reason for the transaction
+- `reasonCode`: string, nullable — Inventory reason code given when the transaction was booked.
 - `location`: string, nullable — Storage location
 - `batchIndex`: string, nullable — Batch index
 - `inventoryChangeValue`: number (decimal) — Value of the inventory change

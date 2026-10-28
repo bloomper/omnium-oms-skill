@@ -197,17 +197,71 @@ Sample request for adding an internal comment (staff only):
        "CreatedBy": "Support Team"
     }
 
+Sample request for adding a public comment with an attachment that is emailed to the customer:
+
+    POST /api/Orders/AddComment
+    {
+       "OrderId": "ORD-12345",
+       "CommentType": "Public",
+       "CommentText": "Here is the delivery note for your order.",
+       "SendEmail": true,
+       "EmailSubject": "Delivery note",
+       "Attachments": [
+         { "ExternalUrl": "https://files.example.com/delivery-notes/12345.pdf", "FileName": "delivery-note-12345.pdf" }
+       ]
+    }
+
 Notes:
 - CommentType defaults to "Public" if not specified. CreatedBy defaults to the current API user's username if not specified.
 - EmailTo, EmailFrom, SenderName, and SmsPhoneNumber will fall back to the store's (or global) default settings in Omnium if not specified.
 - EmailTo falls back to the order's customer email. SmsPhoneNumber falls back to the order's customer phone.
+- Attachments are copied from ExternalUrl into Omnium's storage, and are not sent by SMS. To send the file content
+  instead, use POST /api/Orders/AddCommentWithFiles.
 
-**Request body:** [`OmniumOrderCommentRequest`](../../schemas/OmniumOrderCommentRequest.md) — The comment request containing order ID, comment type, text, and notification settings
+**Request body:** [`OmniumOrderCommentRequest`](../../schemas/OmniumOrderCommentRequest.md) — The comment request containing order ID, comment type, text, attachments, and notification settings
 
 **Responses:**
 
 - 200: Comment added successfully
-- 400: string — Invalid request
+- 400: string — Invalid request, or an attachment could not be copied from its ExternalUrl
+- 404: string — Order not found
+
+---
+
+## `POST /api/Orders/AddCommentWithFiles`
+
+**Add a comment with uploaded files to an order, with the option to send SMS, email or both**
+
+Operation ID: `OrdersAddCommentWithFiles`
+
+Takes the same fields as POST /api/Orders/AddComment, sent as multipart/form-data form fields, together with the
+files to attach. The files are stored in Omnium, attached to the comment and included in the email notification.
+
+Sample request:
+
+    POST /api/Orders/AddCommentWithFiles
+    Content-Type: multipart/form-data
+
+    OrderId: ORD-12345
+    CommentType: Public
+    CommentText: Here is the delivery note for your order.
+    SendEmail: true
+    EmailSubject: Delivery note
+    files: (binary) delivery-note-12345.pdf
+    files: (binary) photo.jpg
+
+With curl:
+
+    curl -X POST "$OMNIUM_API/api/Orders/AddCommentWithFiles" -H "Authorization: Bearer $TOKEN" -F OrderId=ORD-12345 -F CommentText="Here is the delivery note for your order." -F files=@delivery-note-12345.pdf -F files=@photo.jpg
+
+The notes on POST /api/Orders/AddComment apply here too.
+
+**Request body:** `multipart/form-data`
+
+**Responses:**
+
+- 200: Comment added successfully
+- 400: string — Invalid request, or an empty file
 - 404: string — Order not found
 
 ---

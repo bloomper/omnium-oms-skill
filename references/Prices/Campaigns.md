@@ -20,6 +20,7 @@ Campaigns provide structure and visibility across the full lifecycle: from initi
 *   [Campaign Promotions](Campaigns/campaign-promotions.md) — Link promotions to campaigns and manage promotion assignments
 *   [Campaign Planning](Campaigns/campaign-planning.md) — Set revenue targets and sales volume forecasts at campaign, promotion, and SKU level
 *   [Campaign Performance](Campaigns/campaign-performance.md) — Track revenue, sales volume, and variance against targets with real-time analytics
+*   [Campaign Settings](Campaigns/campaign-settings.md) — How to configure campaign statuses with a locked status, campaign milestones and deadlines, planning dimensions, sales channels and the thresholds of the campaign overview.
 
 * * *
 

@@ -308,6 +308,18 @@ The `tags` field is available on the `GET`, `POST`, and `PATCH` promotion endpoi
 
 * * *
 
+## Campaigns
+
+A promotion can belong to one [campaign](Campaigns.md), which groups promotions for planning and follow-up. Set the campaign with `campaignId` on the `POST` and `PATCH` promotion endpoints; `GET` returns it.
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `campaignId` | `string` | Id of an existing campaign. Left out (`null`), the promotion stays in the campaign it is in; an empty string takes it out of its campaign. |
+
+Linking a promotion recalculates the dates of the campaign it joins and of the campaign it leaves, as linking it on the campaign page does. An unknown campaign answers `400 Bad Request` and the promotion is not saved. A `PATCH` that changes nothing but `campaignId` moves the promotion without saving it again, so its prices are not rebuilt. See [Campaign Promotions](Campaigns/campaign-promotions.md#linking-through-the-api).
+
+* * *
+
 ## Best Practices
 
 ### 1\. Promotion Design

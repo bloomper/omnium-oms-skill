@@ -45,6 +45,27 @@ Operation ID: `StoresDelete`
 
 ---
 
+## `GET /api/Stores/{storeId}/TaxGroups`
+
+**Returns the VAT rates a store sells under: the store's own VAT rates merged over the tenant VAT rates by code**
+
+Operation ID: `StoresGetTaxGroups`
+
+Returns the active rows. Without validOn, every date window of a code is returned; with validOn, only the rows
+valid on that day. The list is empty when the tenant does not use tax groups. Account overrides are left out.
+
+| Param | In | Type | Required | Description |
+|-------|----|------|----------|-------------|
+| `storeId` | path | string | Yes | ID of the store |
+| `validOn` | query | string (date-time) | No | Optional day to return the VAT rates of |
+
+**Responses:**
+
+- 200: List<[`OmniumTaxGroup`](../schemas/OmniumTaxGroup.md)> — VAT rates returned
+- 404: [`ProblemDetails`](../schemas/ProblemDetails.md) — Store does not exist
+
+---
+
 ## `GET /api/Stores/GetByExternalId`
 
 **Returns a list of stores**
@@ -97,7 +118,7 @@ Operation ID: `StoresPost`
 
 ## `PUT /api/Stores`
 
-**Create or update store in Omnium, overriding existing store**
+**Create or update store in Omnium, overriding the fields of an existing store that this model carries. Settings that are only edited in Omnium, such as the chart of accounts, are kept.**
 
 Operation ID: `StoresPut`
 

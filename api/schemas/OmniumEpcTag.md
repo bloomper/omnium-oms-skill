@@ -10,6 +10,7 @@ products (skuId/GTIN), deliveries and orders - inventory quantities never depend
 - `gtin14`: string, nullable — Canonical 14-digit GTIN. Derived from an SGTIN EPC or from Gtin when omitted.
 - `gtin`: string, nullable — GTIN with leading zeros stripped (12/13/14 digits), matching how products store EAN/GTIN. Derived from an SGTIN EPC or from Gtin14 when omitted.
 - `serialNumber`: string, nullable — Tag serial number. Derived from an SGTIN/GRAI EPC when omitted.
+- `serialValue`: integer (int64), nullable — The serial number as a number, for range searches. Managed by Omnium from SerialNumber; null when the serial is not numeric.
 - `companyPrefix`: string, nullable — GS1 company prefix of the tag issuer. Derived from an SGTIN/GRAI EPC when omitted.
 - `skuId`: string, nullable — SKU code of the product the tag is attached to. Resolved from the GTIN when omitted.
 - `brand`: string, nullable — Product brand. Resolved from the product when omitted - enables fetching all EPCs for one brand.

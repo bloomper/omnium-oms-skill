@@ -14,6 +14,7 @@ Type: Dictionary<string, object>
 - [Cases](../endpoints/cases.md)
 - [Customers | B2B](../endpoints/customers/b2b.md)
 - [Customers | B2C](../endpoints/customers/b2c.md)
+- [Insights](../endpoints/insights.md)
 - [Obsolete](../endpoints/obsolete.md)
 - [Orders | Batch Updates](../endpoints/orders/batch-updates.md)
 - [Orders | Payments](../endpoints/orders/payments.md)

@@ -147,7 +147,8 @@ Search ledger lines across postings — useful for building an account-by-accoun
 | Property | Type | Description |
 | --- | --- | --- |
 | Id | string | Unique posting ID. |
-| Source | [OmniumPostingSource](api-reference.md#enums) | `PosZReport` or `WebFulfillment`. |
+| Source | [OmniumPostingSource](api-reference.md#enums) | `PosZReport` or `WebFulfillment`. Returned as a number. |
+| OrderType | string | Order type the posting covers, when web-fulfillment postings are split [per order type](ledger-config.md#posting-settings). Empty on per-store `WebFulfillment` postings and on all `PosZReport` postings. |
 | ZReportId | string | Z-report the posting was built from (POS only). |
 | ZReportNumber | long? | Z-report number, when applicable. |
 | OrderIds | List<string> | Orders that contributed to the posting. |
@@ -185,13 +186,15 @@ Search ledger lines across postings — useful for building an account-by-accoun
 | AccountingCompanyCode | string | Accounting company code, when configured. |
 | AccountNumber | string | GL account number. |
 | AccountName | string | Human-readable account name. |
-| Category | [OmniumAccountCategory](api-reference.md#enums) | What kind of entry this is. |
+| Category | [OmniumAccountCategory](api-reference.md#enums) | What kind of entry this is. Returned as a number. |
 | Debit | decimal | Debit amount in posting currency. |
 | Credit | decimal | Credit amount in posting currency. |
+| DebitInclVat | decimal? | Debit amount including VAT, for accounting systems that take the VAT-inclusive amount on the revenue line. `Sales`, `Shipping`, and rental revenue lines carry their net amount plus the VAT booked against them, the `OutputVat` line that VAT came from reads `0`, and every other line equals `Debit`. Empty on lines posted before the field existed. See [Accounts and VAT on the ledger lines](ledger-accounting-export.md#accounts-and-vat-on-the-ledger-lines). |
+| CreditInclVat | decimal? | Credit amount including VAT. See `DebitInclVat`. |
 | CurrencyCode | string | ISO currency code. |
 | VatCode | string | VAT code on VAT-related lines. |
 | VatRate | decimal? | VAT rate as a percentage (e.g. `25`). |
-| VatAmount | decimal? | VAT amount in posting currency. |
+| VatAmount | decimal? | Not filled by postings. The VAT is the amount of the `OutputVat` line. |
 | TaxGroupCode | string | Tax-group code from the line-level snapshot. |
 | Description | string | Free-text description. |
 | CustomerNumber | string | Customer number, when applicable (e.g. receivables). |
@@ -200,7 +203,7 @@ Search ledger lines across postings — useful for building an account-by-accoun
 | InvoiceDate | DateTime? | Invoice date, when applicable. |
 | DueDate | DateTime? | Due date, when applicable. |
 | KidNumber | string | KID / payment reference, when applicable. |
-| Dimensions | Dictionary<string,string> | Free-form dimensions / cost centres carried on the line. |
+| Dimensions | Dictionary<string,string> | Free-form dimensions / cost centres. Not filled by postings. |
 
 ### Posting search request
 
@@ -264,16 +267,18 @@ Both search endpoints return a paged result:
 
 ### Enums
 
+Responses return `source` and `category` as numbers, while the swagger documentation lists their names. Requests accept either the name or the number.
+
 **OmniumPostingSource**
 
-| Value | Meaning |
-| --- | --- |
-| `PosZReport` | Built inline when a POS Z-report is closed. |
-| `WebFulfillment` | Built daily per (store, posting date) from the payment transactions of web/CS orders at the store. |
+| Value | Name | Meaning |
+| --- | --- | --- |
+| 0 | `PosZReport` | Built inline when a POS Z-report is closed. |
+| 1 | `WebFulfillment` | Built daily per (store, posting date) from the payment transactions of web/CS orders at the store. |
 
 **OmniumAccountCategory**
 
-`Sales`, `OutputVat`, `PaymentMethod`, `Shipping`, `Discount`, `Rounding`, `RefundPaymentMethod`, `InternalTransferOut`, `InternalTransferIn`, `Receivable`, `GiftCardLiability`, `PaymentProviderFee`, `Other`, `CashFloat`, `CashInTransit`, `OverShort`, `Tip`, `DepositLiability`.
+`Sales` (0), `OutputVat` (1), `PaymentMethod` (2), `Shipping` (3), `Discount` (4), `Rounding` (5), `RefundPaymentMethod` (6), `InternalTransferOut` (7), `InternalTransferIn` (8), `Receivable` (9), `GiftCardLiability` (10), `PaymentProviderFee` (11), `Other` (12), `CashFloat` (13), `CashInTransit` (14), `OverShort` (15), `Tip` (16), `DepositLiability` (17).
 
 See [Account categories](ledger-postings.md#account-categories) for what each represents. Lines booked to a `RentalSales` account are returned with category `Other`; filtering ledger lines by `Other` does not include them.
 

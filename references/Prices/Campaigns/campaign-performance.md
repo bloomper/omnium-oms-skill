@@ -26,6 +26,8 @@ The top of the campaign detail page displays key performance indicators:
 
 Revenue variance is color-coded: green when actual revenue exceeds the target, allowing you to quickly identify campaigns that are over- or under-performing.
 
+Actual revenue and the SKU-level planned revenue both exclude VAT, so they compare on the same basis. Planned revenue entered on a promotion counts as entered.
+
 * * *
 
 ## Promotion-Level Performance
@@ -99,9 +101,23 @@ The analytics system also supports the following aggregation dimensions, dependi
 
 ## Performance Summary for Multiple Campaigns
 
-When viewing the campaign list, you can see performance summaries for multiple campaigns at once. This provides a quick comparison of how different campaigns are performing without opening each one individually.
+The **Follow-up** tab on the campaign page compares actual sales with the forecast and with last year for the campaigns that overlap a chosen period, using the campaign filters at the top of the page. Campaigns that have not started yet are listed, but left out of the key figures, the deviation per dimension and the item panels. Links to the former **Performance Overview** and **Charts** tabs open the **Follow-up** tab. A period whose campaigns use more than 200 price lists is not shown; narrow the period or the filters.
 
-Summary data includes planned revenue, actual revenue, and progress percentage for each campaign.
+The tab shows:
+
+*   **Key figures** — actual revenue against the forecast, the deviation from the forecast with how many campaigns reached it, the actual store margin against the planned margin, and the change from last year
+*   **Planned vs actual per campaign** — revenue bars per campaign, with the performance table of planned and actual revenue, progress, gross margin, volume, orders and time beneath
+*   **Against forecast** — the five values of a [planning dimension](campaign-settings.md#group-planned-items-with-planning-dimensions) furthest over and the five furthest under the forecast
+*   **Campaign success over time** — actual revenue, forecast and last year per month for the campaigns that start in a chosen year; last year is the campaigns that started the year before
+*   **Units sold before, during and after** — weekly units of a campaign's items in the weeks before, during and after the campaign, with the planned units and the lift during the campaign
+*   **Sales share per channel** — the share of units per [sales channel](campaign-settings.md#split-actual-sales-into-sales-channels), per dimension value, brand, campaign or item, against the average
+*   **Top 20 items against forecast and last year** — the best-selling items with their deviation from the forecast or their share per sales channel, and last year's revenue for the same items in the same weeks one year earlier
+*   **Evaluation per Placement** — the items summed per value of the dimension chosen in the item filters, placement by default; the heading names the chosen dimension
+*   **More charts** — daily revenue and revenue per store for the same campaigns as the rest of the tab: those that overlap the chosen period and have started, from the order lines that carry their promotions, over their days up to today
+
+In the key figures and the per-campaign rows, last year is the campaign's previous campaign when it has one; otherwise it is the same items in the same weeks one year earlier (364 days back, so the weekdays line up). Which order lines count as actual sales is a [tenant setting](campaign-settings.md#choose-what-counts-as-actual-sales).
+
+Margins and gross profit are shown only to users with read access to cost prices.
 
 * * *
 

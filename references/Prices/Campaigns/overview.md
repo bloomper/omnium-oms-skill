@@ -26,6 +26,9 @@ Campaigns do not directly affect pricing. They organize and track the promotions
 | **Tags** | Labels for categorization and filtering (e.g., "seasonal", "clearance") |
 | **Planning Notes** | Internal notes for the planning phase |
 | **Properties** | Custom key-value pairs for extensibility |
+| **Campaign code** | Code shown next to the campaign name, such as the campaign number from an ERP system. Set in the campaign edit form. |
+| **Previous campaign** | The same campaign last year, whose figures serve as last year's when the campaign is evaluated. A copy that starts more than 300 days after its source gets the source as its previous campaign. |
+| **Milestones** | Dated deadlines such as the store order deadline, created from the tenant's [milestone types](campaign-settings.md#give-every-campaign-milestones-and-deadlines) when the campaign gets a start date |
 
 * * *
 
@@ -42,7 +45,7 @@ Every campaign follows a linear lifecycle with four statuses:
 | Status | Description | What you can do |
 | --- | --- | --- |
 | **Planning** | Campaign is being planned. Targets and budgets can be edited. | Edit all fields, link/unlink promotions, set revenue targets |
-| **Active** | Campaign is live. Promotions may be running. | View performance, monitor KPIs. Planning inputs are locked. |
+| **Active** | Campaign is live. Promotions may be running. | View performance, monitor KPIs. |
 | **Completed** | Campaign period has ended. Performance data is final. | Review results. Campaign is read-only. |
 | **Archived** | Campaign is no longer relevant. Hidden from default views. | Can still be found via search with archived filter. |
 
@@ -52,6 +55,10 @@ Every campaign follows a linear lifecycle with four statuses:
 *   One rollback is allowed: **Active → Planning** (for corrections before the campaign is underway)
 *   Skipping stages is not allowed (e.g., Planning → Completed)
 *   Backward transitions other than Active → Planning are not allowed
+
+### Locked Status
+
+A tenant can add a locked status between planning and active: the phase in which the campaign's plan is frozen before it goes live. When the locked status has a default offset, its date is set from the campaign start date, and the automatic status transition moves the campaign into it on that date. While a campaign is in the locked status, an edit of one of its price list items that changes the planned volume, price or costs is refused in the Omnium UI unless you are an administrator (Omnium staff or a user with the tenant's **Administrators** role). See [Campaign Settings](campaign-settings.md#lock-the-plan-with-a-locked-campaign-status) for the configuration and its rules.
 
 * * *
 

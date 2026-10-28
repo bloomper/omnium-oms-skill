@@ -500,6 +500,33 @@ Operation ID: `ProjectsGoToWorkflowStep`
 
 ---
 
+## `POST /api/Projects/{projectId}/ChangeProjectType`
+
+**Change the project type of a project, or refresh the project from the project type it already has**
+
+Operation ID: `ProjectsChangeProjectType`
+
+The workflow steps, check lists and the settings the project copies from its project type are taken from the project type again.
+Leave ProjectTypeId empty to refresh the project from its current project type, for example after steps have been added to the project type.
+Unless ResetWorkflowSteps is true, steps and check list items that match keep their dates and completion, and a project that stays on
+its current step keeps its deadline.
+
+| Param | In | Type | Required | Description |
+|-------|----|------|----------|-------------|
+| `projectId` | path | string | Yes | ID of the project |
+| `runWorkflow` | query | boolean | No | If true, the workflow actions of the new current step are processed, which may notify the customer by email/SMS |
+
+**Request body:** [`OmniumChangeProjectTypeRequest`](../schemas/OmniumChangeProjectTypeRequest.md) — The project type and step to change to
+
+**Responses:**
+
+- 200: [`OmniumProject`](../schemas/OmniumProject.md) — Project type changed. Updated project is returned.
+- 400: string — Invalid request, or the workflow step is not on the project type
+- 404: string — Project or project type not found
+- 409: [`ProblemDetails`](../schemas/ProblemDetails.md) — Conflict
+
+---
+
 ## `POST /api/Projects/{projectId}/AddRejectingPartner`
 
 **Add partner to list of partners rejecting project**

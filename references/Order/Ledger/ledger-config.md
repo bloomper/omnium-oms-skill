@@ -13,7 +13,7 @@ Accounting is **off by default**. Nothing is posted until you enable it explicit
 A first-time setup follows this order, because each step depends on the one before it:
 
 1.  Set the **Default currency** and **Time zone** — see [General settings](ledger-config.md#general-settings).
-2.  On the **VAT rates** tab, turn on **Tax groups enabled**, insert the preset for your country, and choose a **Default tax group** — see [Tax Groups](ledger-tax-groups.md). The country account presets reference these tax-group codes, so set them up first.
+2.  On the **VAT rates** tab, turn on **Tax groups enabled**, insert the preset for your country, and choose a **Default tax group** — see [Tax Groups](ledger-tax-groups.md). The country account presets reference these tax-group codes, so set them up first. A tenant whose stores sell under their own VAT rates can leave both empty — see [Store VAT rates without tenant VAT rates](ledger-tax-groups.md#store-vat-rates-without-tenant-vat-rates).
 3.  In **Chart of accounts**, insert the country account preset, then use **Generate accounts from payment methods** and fill in the account numbers — see [Chart of Accounts](ledger-chart-of-accounts.md).
 4.  Make sure there is an `OverShort` account (or set **Over/short account number**) and, if you will post web orders, a `Receivable` account.
 5.  Turn on **Posting enabled** — and, for web orders, **Web fulfillment posting enabled** — but do not save yet. On the **Validation** tab, select **Validate** and resolve every error, then save. Several checks only run while posting is on, and validation reads the values on screen, including unsaved changes — see [Validation](ledger-config.md#validation).
@@ -73,8 +73,9 @@ The **Validation** tab checks the accounting settings currently on screen — in
 | Duplicate chart entries | Warning | Two active entries share category, discriminator, currency, and tax group. Only the first is used. |
 | Entry doesn't match any active payment method | Warning | A `PaymentMethod` or `RefundPaymentMethod` discriminator matches no configured payment method name. |
 | Tax group has no matching Sales / OutputVat account | Error | Tax groups are enabled and an active tax group has no `Sales` or `OutputVat` entry — by tax-group code, by rate, or as a catch-all. `OutputVat` is not required for groups marked outside VAT scope. |
-| No tax groups / tax group has no code | Error | Tax groups are enabled but none are configured, or an active tax group has no code. |
-| Default tax group missing or inactive | Warning / Error | Tax groups are enabled without a default (warning), or the default does not reference an active group (error). |
+| Tax groups left to the stores | Info | Tax groups are enabled, but the tenant has none of its own. Only stores with their own VAT rates use them. The suggested fix says what a default tax group changes — see [Store VAT rates without tenant VAT rates](ledger-tax-groups.md#store-vat-rates-without-tenant-vat-rates). |
+| Tax group has no code | Error | An active tax group has no code. |
+| Default tax group missing or inactive | Warning / Error | The tenant has tax groups of its own but no default (warning), or the default does not reference an active group (error). |
 | Tax group has Rate=0 but is not outside VAT scope | Info | A 0 % group is not marked **Outside VAT**. Expected for zero-rated groups such as `ZERO`, `EXPORT`, and `EU_B2B`, which are inside VAT scope; ignore it for those. |
 | Duplicate tax group code | Error | Two tax groups share a code. Also reported for groups that share a code with non-overlapping validity windows, which is the valid way to [change a rate](ledger-tax-groups.md#validity-windows-and-rate-changes); in that case you can ignore it. |
 | Time zone, currency, cutoff hour | Warning / Error | **Posting enabled** is on and the time zone or default currency is empty (warning), the time zone is not a recognised ID (error), or the cutoff hour is outside 0–23 (error). |

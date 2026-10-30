@@ -12,8 +12,8 @@ Search this file for a keyword or jump to a topic, then read only the pages you 
 - [Customers](#customers) (14 pages)
 - [Getting Started, API Conventions & Security](#getting-started-api-conventions--security) (21 pages)
 - [Integrations](#integrations) (12 pages)
-- [Inventory](#inventory) (13 pages)
-- [Orders](#orders) (222 pages)
+- [Inventory](#inventory) (14 pages)
+- [Orders](#orders) (223 pages)
 - [Prices](#prices) (25 pages)
 - [Products](#products) (57 pages)
 - [Projects](#projects) (13 pages)
@@ -422,6 +422,7 @@ Inventory management in Omnium — stock levels, ATP calculations, inventory val
 - [Configuration](Inventory/inventory-config.md) — Learn how to configure inventory management settings in Omnium. This guide covers inventory tracking, reservations, ATP providers, inventory valuation, and warehouse allocation.
 - [Inventory Value](Inventory/inventory-value.md) — Understanding inventory valuation methods and how Omnium calculates inventory cost values
 - [OmniStock](Inventory/omnistock.md) — Aggregate inventory across multiple warehouses and stores to determine online product availability.
+- [Priority Stock](Inventory/priority-stock.md) — Mark units in a store's inventory as priority stock so allocation sells them first, for example a return the store took in for a product it does not carry.
 - [Stock Buffer](Inventory/stock-buffer.md) — Hold back a fixed number of units from available inventory so they are not sold through normal cart or order flows.
 - [Virtual Stock Locations](Inventory/virtual-stock-locations.md) — Learn how to configure virtual stock locations in Omnium.
 - [Warehouse Locations](Inventory/warehouse-locations.md) — Track inventory at specific physical locations within warehouses. Assign stock to locations, transfer between locations, set default locations for fulfillment and returns.
@@ -454,6 +455,7 @@ Order management in Omnium — lifecycle, workflows, returns, click & collect, a
 - [Order Locking](Order/order-locking.md) — How concurrent order updates behave in Omnium, how to enable the optional per-order lock for your tenant, and how to handle the 409 ResourceLocked response.
 - [Order Logging](Order/order-logging.md) — Understanding the logging and audit trail features on orders in Omnium, including event log, order status log, workflow execution results, comments, and errors.
 - [Pick Lists](Order/order-pick-lists.md) — How pick lists group order shipments for warehouse and in-store picking in Omnium, including statuses, deviation handling, and the Pick List API.
+- [Sample Order Types](Order/order-type-samples.md) — Sample order type configurations for click and collect, an online order with home delivery or pickup in store from a warehouse or a store, and endless aisle sales.
 - [Workflow Steps](Order/workflow-steps.md) — Complete reference for all workflow steps (OrderActions) in Omnium OMS - the building blocks of order processing workflows.
 
 ### Order/Allocation
@@ -479,7 +481,7 @@ Order management in Omnium — lifecycle, workflows, returns, click & collect, a
 - [Posting Preview (dry run)](Order/Ledger/ledger-preview.md) — Preview the accounting postings an order or a store/date range would generate, without committing them — useful for validating the chart of accounts and tax groups before going live.
 - [Postings in the UI](Order/Ledger/ledger-reports.md) — Browse accounting postings under Reports — the list and detail views, ledger-line inspection, CSV export, the Accounting Ledger custom report, and the per-Z-report VAT settlement export.
 - [Store Accounts](Order/Ledger/ledger-store-accounts.md) — Give a store its own accounting accounts that replace individual tenant chart-of-accounts entries, and set the store's accounting company code and accounting dimension code.
-- [Tax Groups (VAT codes)](Order/Ledger/ledger-tax-groups.md) — Tenant-managed VAT codes in Omnium — a rate, an ERP/SAF-T external code (MVA-kode), validity windows for rate changes, per-store VAT rates, and how tax groups tag products, prices, and ledger lines.
+- [Tax Groups (VAT codes)](Order/Ledger/ledger-tax-groups.md) — Tenant-managed VAT codes in Omnium — a rate, an ERP/SAF-T external code (MVA-kode), validity windows for rate changes, store VAT rates with or without tenant VAT rates, and how tax groups tag products, prices, and ledger lines.
 
 ### Order/order-logging
 
@@ -538,7 +540,7 @@ Order management in Omnium — lifecycle, workflows, returns, click & collect, a
 
 ### Order/Returns/return-workflow-steps/payment
 
-- [Create Credit Note](Order/Returns/return-workflow-steps/payment/create-credit-note.md) — Generate a credit note document for the return transaction.
+- [Create Credit Note](Order/Returns/return-workflow-steps/payment/create-credit-note.md) — Issue a credit note for a return, the return receipt that reverses the returned lines of a receipt or invoice, and email it to the customer.
 - [Credit Return](Order/Returns/return-workflow-steps/payment/credit-return.md) — Process refunds by crediting payment amounts back to the customer's original payment method.
 - [Export Payments](Order/Returns/return-workflow-steps/payment/export-payments.md) — Export return payment data to external payment systems and accounting integrations.
 

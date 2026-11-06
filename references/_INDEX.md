@@ -7,7 +7,7 @@ Search this file for a keyword or jump to a topic, then read only the pages you 
 ## Topics
 
 - [Carts](#carts) (21 pages)
-- [Configuration](#configuration) (90 pages)
+- [Configuration](#configuration) (91 pages)
 - [Connectors & Plugins](#connectors--plugins) (76 pages)
 - [Customers](#customers) (14 pages)
 - [Getting Started, API Conventions & Security](#getting-started-api-conventions--security) (21 pages)
@@ -152,6 +152,7 @@ Platform settings, scheduled tasks, GUI extensions, reports, and other configura
 - [Cancel Expired Click and Collect](configuration/scheduled-tasks/orders/cancel-expired-click-collect.md) — Automatically cancel click and collect orders that exceed their time limits
 - [Cancel Expired Orders](configuration/scheduled-tasks/orders/cancel-expired-orders.md) — Legacy task that cancels expired click and collect orders by flipping their status
 - [Cancel Orders with Expired Pickup Deadline](configuration/scheduled-tasks/orders/cancel-orders-with-expired-pickup-deadline.md) — Automatically cancel orders where the customer pickup deadline has passed.
+- [Create Draft Purchase Orders](configuration/scheduled-tasks/orders/create-draft-purchase-orders.md) — Automatically create and refresh one draft purchase order per supplier from the current reorder suggestions
 - [Delete Old Orders](configuration/scheduled-tasks/orders/delete-old-orders.md) — Permanently remove orders older than the configured retention period
 - [Order Automation](configuration/scheduled-tasks/orders/order-automation.md) — Automatically transition order status based on configurable conditions
 - [Payment Settlements](configuration/scheduled-tasks/orders/payment-settlements.md) — Retrieve and record payment settlement data from payment providers

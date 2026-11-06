@@ -6,7 +6,7 @@ Source: https://docs.omnium.no/docs/Order/Ledger/ledger-posting-exclusions
 
 **Posting exclusions** are rules that keep matching orders out of [web-fulfillment postings](ledger-postings.md#posting-sources). Use them when some orders are booked another way — for example marketplace orders settled through the marketplace's own accounting, or B2B orders invoiced from an ERP — so the same revenue and payments are not booked twice.
 
-Rules are managed under **Configuration → Settings → Advanced → Accounting settings**, in the **Posting exclusions** card. Select **Add exclusion rule** to add one, and the delete icon to remove it.
+Rules are managed under **Configuration → Settings → Finance → Accounting settings**, in the **Posting exclusions** card. Select **Add exclusion rule** to add one, and the delete icon to remove it.
 
 Exclusions apply **only to web-fulfillment postings**. POS postings built from Z-reports and the **Export bookkeeping file** under **Reports → Payments** are never affected. Rules have no effect unless **Web fulfillment posting enabled** is on, or postings are generated manually from **Reports → Accounting**.
 

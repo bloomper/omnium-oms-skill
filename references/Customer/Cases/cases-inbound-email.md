@@ -120,8 +120,8 @@ Key fields:
 
 The **Inbound Email Address** is the reply-to address that Omnium includes in outbound email notifications. This allows customers to reply directly to case notifications.
 
-1.  Navigate to **Configuration → Settings → Advanced**
-2.  Go to **Notifications → Email Client Settings**
+1.  Navigate to **Configuration → Settings → Communication**
+2.  Go to **Email client**
 3.  Set the **Inbound Email Address** field (e.g., `support@incoming.yourcompany.com`)
 4.  Click **Save**
 

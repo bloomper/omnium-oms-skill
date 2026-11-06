@@ -8,7 +8,7 @@ Source: https://docs.omnium.no/docs/plugins/Other/Sendgrid
 
 ### Settings in Omnium
 
-1.  Go to **Configuration -> Advanced -> Email Client**.
+1.  Go to **Configuration -> Settings -> Communication -> Email client**.
 2.  Set **type** to **Sendgrid**.
 3.  Add the **API key** to the **"Key Name"** field.
 
@@ -42,7 +42,7 @@ _**NB!** It is recommended to use the **POST the raw, full MIME message** option
 
 ### Inbound Settings in Omnium
 
-1.  Go to **Configuration -> Advanced -> Email Client**.
+1.  Go to **Configuration -> Settings -> Communication -> Email client**.
 2.  Add the new inbound e-mail address to **"Inbound E-mail Address"**.
 
 ### Using Raw-format with SendGrid
@@ -61,5 +61,5 @@ Due to varying formats across different email providers, formatting issues may s
 
 ### Inbound Settings in Omnium:
 
-1.  Go to **Configuration** -> **Advanced** -> **Email Client**
+1.  Go to **Configuration** -> **Settings** -> **Communication** -> **Email client**
 2.  Add the new inbound email address to **"Inbound email address"**

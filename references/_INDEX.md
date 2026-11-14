@@ -12,7 +12,7 @@ Search this file for a keyword or jump to a topic, then read only the pages you 
 - [Customers](#customers) (14 pages)
 - [Getting Started, API Conventions & Security](#getting-started-api-conventions--security) (21 pages)
 - [Integrations](#integrations) (12 pages)
-- [Inventory](#inventory) (14 pages)
+- [Inventory](#inventory) (15 pages)
 - [Orders](#orders) (223 pages)
 - [Prices](#prices) (25 pages)
 - [Products](#products) (60 pages)
@@ -103,7 +103,6 @@ Platform settings, scheduled tasks, GUI extensions, reports, and other configura
 ### configuration/scheduled-tasks/analytics
 
 - [Add Stats Customers](configuration/scheduled-tasks/analytics/add-stats-customers.md) — Queue changed customers for asynchronous statistics processing
-- [Add Stats Orders](configuration/scheduled-tasks/analytics/add-stats-orders.md) — Queue changed orders for asynchronous statistics processing
 - [Analytics Interaction](configuration/scheduled-tasks/analytics/analytics-interaction.md) — Index customer interaction analytics from orders
 - [Analytics Inventory](configuration/scheduled-tasks/analytics/analytics-inventory.md) — Index inventory analytics data for reporting and dashboards
 - [Analytics Order Line](configuration/scheduled-tasks/analytics/analytics-order-line.md) — Index order line analytics for sales reporting and analysis
@@ -155,6 +154,7 @@ Platform settings, scheduled tasks, GUI extensions, reports, and other configura
 - [Cancel Orders with Expired Pickup Deadline](configuration/scheduled-tasks/orders/cancel-orders-with-expired-pickup-deadline.md) — Automatically cancel orders where the customer pickup deadline has passed.
 - [Create Draft Purchase Orders](configuration/scheduled-tasks/orders/create-draft-purchase-orders.md) — Automatically create and refresh one draft purchase order per supplier from the current reorder suggestions
 - [Delete Old Orders](configuration/scheduled-tasks/orders/delete-old-orders.md) — Permanently remove orders older than the configured retention period
+- [Extend Payment Authorization](configuration/scheduled-tasks/orders/extend-payment-authorization.md) — Automatically extend payment authorizations that are about to expire so you can still capture the payment
 - [Order Automation](configuration/scheduled-tasks/orders/order-automation.md) — Automatically transition order status based on configurable conditions
 - [Payment Settlements](configuration/scheduled-tasks/orders/payment-settlements.md) — Retrieve and record payment settlement data from payment providers
 - [Try Reallocate Orders](configuration/scheduled-tasks/orders/try-reallocate-orders.md) — Process orders that have passed their reallocation deadline
@@ -425,6 +425,7 @@ Inventory management in Omnium — stock levels, ATP calculations, inventory val
 - [Inventory Value](Inventory/inventory-value.md) — Understanding inventory valuation methods and how Omnium calculates inventory cost values
 - [OmniStock](Inventory/omnistock.md) — Aggregate inventory across multiple warehouses and stores to determine online product availability.
 - [Priority Stock](Inventory/priority-stock.md) — Mark units in a store's inventory as priority stock so allocation sells them first, for example a return the store took in for a product it does not carry.
+- [Reservation Reconciliation](Inventory/reservation-reconciliation.md) — Compare the reserved quantity on the inventory with what open orders and internal transfers reserve, and find orders that hold a stale reservation.
 - [Stock Buffer](Inventory/stock-buffer.md) — Hold back a fixed number of units from available inventory so they are not sold through normal cart or order flows.
 - [Virtual Stock Locations](Inventory/virtual-stock-locations.md) — Learn how to configure virtual stock locations in Omnium.
 - [Warehouse Locations](Inventory/warehouse-locations.md) — Track inventory at specific physical locations within warehouses. Assign stock to locations, transfer between locations, set default locations for fulfillment and returns.
@@ -771,7 +772,7 @@ How prices work in Omnium — price levels, promotions, price lists, prioritizat
 - [Prices](Prices.md) — How prices work in Omnium — price levels, promotions, price lists, prioritization, and tax handling.
 - [Campaigns](Prices/Campaigns.md) — Plan, execute, and measure promotional campaigns in Omnium — group promotions, set revenue targets, and track performance in real time.
 - [Lowest price history](Prices/lowest-price.md) — Automatically tracks the lowest valid price for products over a set period to ensure compliance with pricing regulations such as the EU Omnibus Directive.
-- [Price list](Prices/PriceLists.md) — Create price lists to manage prices
+- [Price list](Prices/PriceLists.md) — Create price lists in the Omnium UI or with the API, add price list items, activate them to publish prices to products, and lock base prices that an ERP owns
 - [Price prioritization rules](Prices/PricePrioritization.md) — Before adding prices to a product, it's important to understand how prices are prioritized. This includes filtering, sorting and selecting defaults based on the contextual input and available price configurations.
 - [Prices and Tax](Prices/PricesAndTax.md) — How tax is stored on prices, how it flows through the cart and POS, and how to configure tax groups for VAT reporting.
 - [Pricing and Promotions Overview](Prices/pricing-and-promotions.md) — How pricing works in Omnium — the relationship between price creation, price storage, promotions, and how the right price reaches your customer.

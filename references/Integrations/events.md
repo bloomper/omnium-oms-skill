@@ -245,6 +245,8 @@ Event operation IDs follow a structured numbering system:
 *   `111103` - WorkflowRunningStep
 *   `111104` - WorkflowChangeStatus
 *   `111105` - WorkflowCompletedRunAfterOrderIsSaved
+*   `111106` - WorkflowAddedPropertiesToShipment
+*   `111107` - WorkflowSaveConflict
 
 #### Distribution (112x)
 
@@ -738,6 +740,9 @@ Event operation IDs follow a structured numbering system:
 *   `310105` - ApiOrderLineAddProperties
 *   `310106` - ApiOrderLineCancel
 *   `310107` - ApiOrderAddPayment
+*   `310108` - ApiOrderLinesUpdateQueuedError
+*   `310109` - ApiOrderWorkflowRetriesExhausted
+*   `310110` - ApiOrderUpdateStatusQueuedError
 
 #### API Invoice (313x)
 

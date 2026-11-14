@@ -269,7 +269,6 @@ The workflow step in this example leaves out the fields that always have default
     }
   ],
   "includedOrderTypesForRevenueStats": ["Online", "Pos"],
-  "useStatsOrderQueues": true,
   "orderLineSettings": {
     "defaultProperties": [
       {
@@ -497,7 +496,6 @@ The response contains the order settings below. See [order settings](../Order/or
 | `DefaultReplacementOrderType` | string | If set, replacement orders get this order type. If not set, the type is inherited from the order that was replaced. |
 | `TagSettings` | array | Available order tags. See [Tag settings](settings-api.md#tag-settings). Not returned when empty. |
 | `IncludedOrderTypesForRevenueStats` | array | Order types included in key numbers, average order values and revenue stats. If not set, the order types `Pos` and `Online` are used. |
-| `UseStatsOrderQueues` | bool | When `true`, orders are copied to the stats order index for analytics and reporting. |
 | `OrderLineSettings` | object | Order line settings. See [Order line settings](settings-api.md#order-line-settings). Not returned when not configured. |
 | `IsInvoiceOriginal` | bool | When `true`, invoices are marked as original. When `false`, invoices are marked as a copy. |
 

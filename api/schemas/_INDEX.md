@@ -458,6 +458,7 @@ Every schema with its description. Search this file for a name or keyword, then 
 - [OmniumPromotionTypePatch](OmniumPromotionTypePatch.md) — Promotion type data
 - [OmniumPromotionTypeRequest](OmniumPromotionTypeRequest.md) — Promotion type data
 - [OmniumPropertyItem](OmniumPropertyItem.md) — Generic property item (key values)
+- [OmniumPropertyItemValue](OmniumPropertyItemValue.md) — One value of a property's Items: a key and a value, with the value type.
 - [OmniumPropertyOption](OmniumPropertyOption.md) — A single value belonging to a centrally managed dropdown option group.
 - [OmniumPropertyOptionOmniumResult](OmniumPropertyOptionOmniumResult.md) — Generic query result
 - [OmniumPropertyOptionSearchRequest](OmniumPropertyOptionSearchRequest.md) — Search request for property options.
@@ -487,6 +488,7 @@ Every schema with its description. Search this file for a name or keyword, then 
 - [OmniumRatingOmniumSearchResult](OmniumRatingOmniumSearchResult.md) — Generic class for receiving search results with facets
 - [OmniumRatingReply](OmniumRatingReply.md) — Class for creating a comment/answer to a rating/review
 - [OmniumRecommendationsResult](OmniumRecommendationsResult.md)
+- [OmniumRelatedEntity](OmniumRelatedEntity.md) — A typed link from a cart or order to another entity it depends on, e.g. an order added to a POS sale ("PaysFor") and, on that order, the POS order that paid for it ("PaidBy").
 - [OmniumRelatedProduct](OmniumRelatedProduct.md) — Representing a collection of related product items by a given key. A key could be "Siblings", "Accessories", etc
 - [OmniumRelatedProductItem](OmniumRelatedProductItem.md)
 - [OmniumRentalAvailabilityPeriod](OmniumRentalAvailabilityPeriod.md) — A time period specifying which products are available for rental
@@ -495,6 +497,11 @@ Every schema with its description. Search this file for a name or keyword, then 
 - [OmniumRentalBooking](OmniumRentalBooking.md) — A booking for a rental product
 - [OmniumRentalProductCreateRequest](OmniumRentalProductCreateRequest.md) — Request for creation of rental products from existing product
 - [OmniumRentalProductCreateResult](OmniumRentalProductCreateResult.md) — Result of rental product creation
+- [OmniumReorderSuggestion](OmniumReorderSuggestion.md) — Reorder suggestion for a SKU in a warehouse, calculated by Omnium from inventory levels and sales history.
+- [OmniumReorderSuggestionOmniumResult](OmniumReorderSuggestionOmniumResult.md) — Generic query result
+- [OmniumReorderSuggestionPatch](OmniumReorderSuggestionPatch.md) — Reorder suggestion patch model for partial updates. Only the values present in the request are updated. Changes to fields involved in the calculation trigger a recalculation of the suggestion.
+- [OmniumReorderSuggestionSearchRequest](OmniumReorderSuggestionSearchRequest.md) — Search and filtering of reorder suggestions
+- [OmniumReorderSuggestionUpdateResult](OmniumReorderSuggestionUpdateResult.md) — Result of a reorder suggestion patch operation
 - [OmniumReplacementRequestModel](OmniumReplacementRequestModel.md) — Request model for replacement order
 - [OmniumReplacementSettings](OmniumReplacementSettings.md)
 - [OmniumReturnCharge](OmniumReturnCharge.md) — Return charge

@@ -333,9 +333,10 @@ Key schemas: [`OmniumCampaign`](schemas/OmniumCampaign.md), [`OmniumCampaignRequ
 |------|-----|-----------|-------------|
 | [`endpoints/purchase-orders.md`](endpoints/purchase-orders.md) | Purchase Orders | 22 | Purchase orders |
 | [`endpoints/purchase-orders/deliveries.md`](endpoints/purchase-orders/deliveries.md) | Purchase Orders \| Deliveries | 12 | Deliveries |
+| [`endpoints/purchase-orders/reorder-suggestions.md`](endpoints/purchase-orders/reorder-suggestions.md) | Purchase Orders \| Reorder Suggestions | 6 |  |
 | [`endpoints/purchase-orders/workflows.md`](endpoints/purchase-orders/workflows.md) | Purchase Orders \| Workflows | 2 | Purchase order workflows |
 
-Key schemas: [`OmniumPurchaseOrder`](schemas/OmniumPurchaseOrder.md), [`OmniumComment`](schemas/OmniumComment.md), [`OmniumDelivery`](schemas/OmniumDelivery.md), [`OmniumDeliveryGoodsReceptionLine`](schemas/OmniumDeliveryGoodsReceptionLine.md), [`OmniumPurchaseOrderOmniumResult`](schemas/OmniumPurchaseOrderOmniumResult.md), [`OmniumPurchaseOrderOmniumScrollableQueryResult`](schemas/OmniumPurchaseOrderOmniumScrollableQueryResult.md), [`OmniumPurchaseOrderOmniumSearchResult`](schemas/OmniumPurchaseOrderOmniumSearchResult.md), [`OmniumPurchaseOrderSearchRequest`](schemas/OmniumPurchaseOrderSearchRequest.md)
+Key schemas: [`OmniumPurchaseOrder`](schemas/OmniumPurchaseOrder.md), [`OmniumComment`](schemas/OmniumComment.md), [`OmniumDelivery`](schemas/OmniumDelivery.md), [`OmniumReorderSuggestionOmniumResult`](schemas/OmniumReorderSuggestionOmniumResult.md), [`OmniumDeliveryGoodsReceptionLine`](schemas/OmniumDeliveryGoodsReceptionLine.md), [`OmniumPurchaseOrderOmniumResult`](schemas/OmniumPurchaseOrderOmniumResult.md), [`OmniumPurchaseOrderOmniumScrollableQueryResult`](schemas/OmniumPurchaseOrderOmniumScrollableQueryResult.md), [`OmniumPurchaseOrderOmniumSearchResult`](schemas/OmniumPurchaseOrderOmniumSearchResult.md)
 
 ### Ratings
 

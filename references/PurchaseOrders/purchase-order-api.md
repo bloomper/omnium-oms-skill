@@ -853,7 +853,7 @@ When merging source into destination, Omnium automatically updates all reference
 | **Customer order forms** | `PurchaseOrderId` | Order-level PO references are updated |
 | **Inventory ATP entries** | `PurchaseOrderId` | Available-to-Promise entries reference the destination |
 
-Historical and immutable data is intentionally **not** updated. This includes inventory transactions, stats order lines, and analytics reorder suggestions — these retain the original purchase order ID as a historical record.
+Historical and immutable data is intentionally **not** updated. This includes inventory transactions and analytics reorder suggestions — these retain the original purchase order ID as a historical record.
 
 Line item IDs are preserved during the merge. Only the `PurchaseOrderId` on each line changes, so `ReservedInventoryPurchaseOrderLineId` and `InventoryAtp.PurchaseOrderLineId` references remain valid without modification.
 
